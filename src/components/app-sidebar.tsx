@@ -122,7 +122,7 @@ const data = {
   projects: [
     {
       name: "Kanban",
-      url: "#",
+      url: "/kanban",
       icon: ArrowRightLeft,
     },
     {
