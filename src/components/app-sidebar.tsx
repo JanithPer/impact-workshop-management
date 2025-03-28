@@ -127,7 +127,7 @@ const data = {
     },
     {
       name: "Calendar",
-      url: "#",
+      url: "/calendar",
       icon: Calendar,
     },
     {
