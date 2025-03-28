@@ -1,4 +1,3 @@
-// components/status-column.tsx
 'use client'
 
 import { useState } from 'react'

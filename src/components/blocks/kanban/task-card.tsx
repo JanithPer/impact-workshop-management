@@ -1,4 +1,3 @@
-// components/task-card.tsx
 'use client'
 
 import { useSortable } from '@dnd-kit/sortable'

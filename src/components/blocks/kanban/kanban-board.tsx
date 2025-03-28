@@ -1,4 +1,3 @@
-// components/kanban-board.tsx
 'use client'
 
 import { useState } from 'react'
