@@ -96,13 +96,13 @@ const Inventory = async () => {
     const data = await getData()
 
   return (
-    <>
+    <div>
     <PageHeader firstLinkName="Inventory" secondLinkName="Parts Inventory" />
     <PageTitle name="Parts Inventory" />
     <div className="container mx-auto px-4">
       <DataTable columns={columns} data={data} filterColumn="part_number" />
     </div>
-    </>
+    </div>
   )
 }
 

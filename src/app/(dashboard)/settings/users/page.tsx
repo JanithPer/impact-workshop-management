@@ -26,13 +26,13 @@ const Users = async () => {
     const data = await getData()
 
   return (
-    <>
+    <div>
     <PageHeader firstLinkName="Orders" secondLinkName="Repair Orders" />
     <PageTitle name="Repair Orders" />
     <div className="container mx-auto px-4">
       <DataTable columns={columns} data={data} filterColumn="name" />
     </div>
-    </>
+    </div>
   )
 }
 

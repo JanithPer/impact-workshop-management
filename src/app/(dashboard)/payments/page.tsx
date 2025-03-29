@@ -44,12 +44,12 @@ export default async function DemoPage() {
   const data = await getData()
 
   return (
-    <>
+    <div>
     <PageHeader firstLinkName="Payments" secondLinkName="All Payments" />
     <PageTitle name="Payments" />
     <div className="container mx-auto px-4">
       <DataTable columns={columns} data={data} filterColumn="email" />
     </div>
-    </>
+    </div>
   )
 }

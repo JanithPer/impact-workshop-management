@@ -13,7 +13,7 @@ const localizer = momentLocalizer(moment);
 const CalendarPage = () => {
 
   return (
-    <>
+    <div>
       <PageHeader firstLinkName="Projects" secondLinkName="Calendar" />
       <div className="px-4 flex justify-between">
         <h2 className="text-2xl">Calendar</h2>
@@ -28,7 +28,7 @@ const CalendarPage = () => {
           style={{ margin: '50px' }}
         />
       </div>
-    </>
+    </div>
   );
 };
 
