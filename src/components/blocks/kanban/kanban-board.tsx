@@ -9,9 +9,38 @@ import { Task } from '../types/task'
 
 export function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: '1', title: 'Job 1', description: 'Description 1', status: 'todo' },
-    { id: '2', title: 'Job 2', description: 'Description 2', status: 'in-progress' },
-    { id: '3', title: 'Job 3', description: 'Description 3', status: 'done' },
+    { 
+      id: '1', 
+      title: 'Job 1', 
+      description: 'Description 1', 
+      avatar:"https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
+      status: 'todo', 
+      colorMode: 'danger' 
+    },
+    { 
+      id: '2', 
+      title: 'Job 2', 
+      description: 'Description 2', 
+      avatar: "https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg",
+      status: 'todo', 
+      colorMode: 'info' 
+    },
+    { 
+      id: '3', 
+      title: 'Job 3', 
+      description: 'Description 3', 
+      avatar: "https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
+      status: 'in-progress', 
+      colorMode: 'success' 
+    },
+    { 
+      id: '4', 
+      title: 'Job 4', 
+      description: 'Description 4', 
+      avatar:"https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
+      status: 'done', 
+      colorMode: 'warning' 
+    },
   ])
   const [activeTask, setActiveTask] = useState<Task | null>(null)
 
@@ -77,7 +106,8 @@ export function KanbanBoard() {
   }
 
   return (
-    <div className="flex gap-4 p-4">
+    <div className="w-full overflow-x-auto">
+    <div className="flex gap-4 p-4 min-w-[800px] max-[800px]:flex-nowrap">
       <DndContext
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
@@ -98,6 +128,7 @@ export function KanbanBoard() {
           ) : null}
         </DragOverlay>
       </DndContext>
+    </div>
     </div>
   )
 }
