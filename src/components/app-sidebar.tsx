@@ -3,14 +3,13 @@
 import * as React from "react"
 import {
   User,
-
   Package,
   ReceiptText,
   ArrowRightLeft,
   Calendar,
   BookOpen,
-
-  Settings2,
+  Settings,
+  Lock,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -41,15 +40,15 @@ const data = {
       items: [
         {
           title: "All Parts",
-          url: "/payments",
+          url: "/inventory",
         },
         {
           title: "History",
-          url: "/orders/repair-orders",
+          url: "#",
         },
         {
           title: "Low Stock",
-          url: "/inventory",
+          url: "#",
         },
       ],
     },
@@ -59,16 +58,12 @@ const data = {
       icon: ReceiptText,
       items: [
         {
-          title: "Login",
-          url: "/login",
-        },
-        {
-          title: "Explorer",
+          title: "All Orders",
           url: "#",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Repair Orders",
+          url: "/orders/repair-orders",
         },
       ],
     },
@@ -78,19 +73,15 @@ const data = {
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "All Documents",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Bookmarks",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "AI Help",
           url: "#",
         },
       ],
@@ -98,7 +89,7 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: Settings2,
+      icon: Settings,
       items: [
         {
           title: "General",
@@ -107,14 +98,6 @@ const data = {
         {
           title: "Users",
           url: "/settings/users",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
         },
       ],
     },
@@ -134,6 +117,11 @@ const data = {
       name: "Customers",
       url: "#",
       icon: User,
+    },
+    {
+      name: "Login",
+      url: "/login",
+      icon: Lock,
     },
   ],
 }
