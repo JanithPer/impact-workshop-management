@@ -15,39 +15,44 @@ export interface Task {
 export const tasks: Task[] = [
   {
     id: "1",
-    title: "Design Homepage",
-    description: "Create wireframes and mockups for the new homepage design",
+    title: "Engine Diagnostics",
+    description: "Perform a full diagnostic scan to identify issues with fuel injection and turbo systems.",
     assignedPeople: [
       {
         id: "1",
-        name: "Sarah Johnson",
-        avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+        name: "John Carter",
+        avatar: "https://randomuser.me/api/portraits/men/45.jpg"
       },
       {
         id: "2",
-        name: "Michael Chen",
-        avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+        name: "Mike Thompson",
+        avatar: "https://randomuser.me/api/portraits/men/34.jpg"
+      },
+      {
+        id: "3",
+        name: "Eren Yeager",
+        avatar: "https://randomuser.me/api/portraits/men/46.jpg"
       }
     ],
     colorMode: "info"
   },
   {
     id: "2",
-    title: "API Integration",
-    description: "Connect the frontend to the payment gateway API",
+    title: "Brake System Repair",
+    description: "Replace worn-out brake pads and inspect the air brake system for leaks.",
     assignedPeople: [
       {
         id: "3",
         name: "Emma Davis",
-        avatar: "https://randomuser.me/api/portraits/women/68.jpg"
+        avatar: "https://randomuser.me/api/portraits/women/28.jpg"
       }
     ],
     colorMode: "success"
   },
   {
     id: "3",
-    title: "Database Optimization",
-    description: "Improve query performance and add indexes",
+    title: "Transmission Overhaul",
+    description: "Disassemble, inspect, and replace damaged gears in the transmission system.",
     assignedPeople: [
       {
         id: "4",
@@ -56,32 +61,27 @@ export const tasks: Task[] = [
       },
       {
         id: "5",
-        name: "Olivia Brown",
-        avatar: "https://randomuser.me/api/portraits/women/12.jpg"
-      },
-      {
-        id: "6",
-        name: "Robert Taylor",
-        avatar: "https://randomuser.me/api/portraits/men/42.jpg"
+        name: "Lucas Brown",
+        avatar: "https://randomuser.me/api/portraits/men/52.jpg"
       }
     ],
     colorMode: "danger"
   },
   {
     id: "4",
-    title: "Mobile Responsiveness",
-    description: "Ensure all pages work well on mobile devices",
+    title: "Suspension Repair",
+    description: "Replace worn-out shocks and inspect leaf springs for any cracks or damages.",
     assignedPeople: [
       {
-        id: "7",
-        name: "Eren Yeager",
-        avatar: "https://randomuser.me/api/portraits/men/64.jpg"
+        id: "6",
+        name: "David Martin",
+        avatar: "https://randomuser.me/api/portraits/men/63.jpg"
       },
       {
-        id: "8",
-        name: "Mikasa Akerman",
-        avatar: "https://randomuser.me/api/portraits/women/25.jpg"
-      },
+        id: "7",
+        name: "Sarah Johnson",
+        avatar: "https://randomuser.me/api/portraits/women/33.jpg"
+      }
     ],
     colorMode: "warning"
   }

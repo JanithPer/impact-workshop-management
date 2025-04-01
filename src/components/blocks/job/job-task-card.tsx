@@ -41,7 +41,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
               onCheckedChange={(checked) => setIsChecked(!!checked)}
             />
             <h3 className={cn(
-              "text-lg font-semibold",
+              "text-lg font-semibold cursor-pointer hover:underline",
               isChecked && "line-through text-muted-foreground"
             )}>
               {task.title}
