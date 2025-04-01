@@ -34,7 +34,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ firstLinkName, secondLinkName }
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="#">{firstLinkName}</BreadcrumbLink>
+              <BreadcrumbLink href="/">{firstLinkName}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem>

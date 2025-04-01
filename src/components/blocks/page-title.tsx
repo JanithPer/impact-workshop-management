@@ -1,6 +1,5 @@
-import React from 'react'
-import { Button } from '../ui/button'
 import { Plus, Trash, Download } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface PageTitleProps {
   name: string;
