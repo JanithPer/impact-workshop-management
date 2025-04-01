@@ -18,7 +18,7 @@ const JobPage = () => {
     <div>
         <PageHeader firstLinkName="Orders" secondLinkName="Job Page" />
         <div className="px-4 flex justify-between">
-            <h2 className="text-2xl">Job Page</h2>
+            <h2 className="text-2xl">South Coast Party Hire</h2>
             <div className="flex gap-2">
             <Button variant="outline" size="icon" className="rounded-full cursor-pointer">
                 <Pencil />
