@@ -5,43 +5,10 @@ import { DndContext, DragOverlay, closestCorners } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { StatusColumn } from './status-column'
 import { TaskCard } from './task-card'
-import { Task } from '../types/task'
+import { Task, tasks as initialTasks } from '@/app/(dashboard)/kanban/data'
 
-export function KanbanBoard() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { 
-      id: '1', 
-      title: 'Job 1', 
-      description: 'Description 1', 
-      avatar:"https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
-      status: 'todo', 
-      colorMode: 'danger' 
-    },
-    { 
-      id: '2', 
-      title: 'Job 2', 
-      description: 'Description 2', 
-      avatar: "https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg",
-      status: 'todo', 
-      colorMode: 'info' 
-    },
-    { 
-      id: '3', 
-      title: 'Job 3', 
-      description: 'Description 3', 
-      avatar: "https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
-      status: 'in-progress', 
-      colorMode: 'success' 
-    },
-    { 
-      id: '4', 
-      title: 'Job 4', 
-      description: 'Description 4', 
-      avatar:"https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg", 
-      status: 'done', 
-      colorMode: 'warning' 
-    },
-  ])
+export function KanbanBoard({ initialData = initialTasks }: { initialData?: Task[] }) {
+  const [tasks, setTasks] = useState<Task[]>(initialData)
   const [activeTask, setActiveTask] = useState<Task | null>(null)
 
   const statuses: Task['status'][] = ['todo', 'in-progress', 'done']
@@ -92,11 +59,13 @@ export function KanbanBoard() {
   }
 
   const addTask = (status: Task['status'], title: string, description: string) => {
-    const newTask = {
+    const newTask: Task = {
       id: Date.now().toString(),
       title,
       description,
       status,
+      assignedPeople: [],
+      colorMode: 'info'
     }
     setTasks([...tasks, newTask])
   }
@@ -107,28 +76,28 @@ export function KanbanBoard() {
 
   return (
     <div className="w-full overflow-x-auto">
-    <div className="flex gap-4 p-4 min-w-[800px] max-[800px]:flex-nowrap">
-      <DndContext
-        collisionDetection={closestCorners}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        {statuses.map(status => (
-          <StatusColumn
-            key={status}
-            status={status}
-            tasks={tasks.filter(task => task.status === status)}
-            addTask={addTask}
-            deleteTask={deleteTask}
-          />
-        ))}
-        <DragOverlay>
-          {activeTask ? (
-            <TaskCard task={activeTask} deleteTask={() => {}} />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-    </div>
+      <div className="flex gap-4 p-4 min-w-[800px] max-[800px]:flex-nowrap">
+        <DndContext
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {statuses.map(status => (
+            <StatusColumn
+              key={status}
+              status={status}
+              tasks={tasks.filter(task => task.status === status)}
+              addTask={addTask}
+              deleteTask={deleteTask}
+            />
+          ))}
+          <DragOverlay>
+            {activeTask ? (
+              <TaskCard task={activeTask} deleteTask={() => {}} />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      </div>
     </div>
   )
 }

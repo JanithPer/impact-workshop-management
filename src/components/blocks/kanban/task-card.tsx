@@ -5,11 +5,12 @@ import { CSS } from '@dnd-kit/utilities'
 import { Move, Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Task } from '../types/task'
+import { Task } from '@/app/(dashboard)/kanban/data'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils' // assuming you're using tailwind classnames utility
+import { cn } from '@/lib/utils'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useState } from 'react'
 
-// Define the color modes and their corresponding colors
 const colorModes = {
   success: 'bg-green-500',
   danger: 'bg-red-500',
@@ -47,11 +48,11 @@ export function TaskCard({
   deleteTask,
   listeners,
 }: {
-  task: Task & { colorMode?: ColorMode } // Add colorMode to Task type or make it optional
+  task: Task & { colorMode?: ColorMode }
   deleteTask: (id: string) => void
   listeners?: any
 }) {
-  // Default to 'info' if no colorMode is provided
+  const [isChecked, setIsChecked] = useState(false)
   const colorMode = task.colorMode || 'info'
   const colorClass = colorModes[colorMode]
 
@@ -63,24 +64,34 @@ export function TaskCard({
         colorClass
       )} />
       
-      <div className='flex justify-between pl-2'> {/* Added pl-2 to account for the color strip */}
-        <div className='flex items-center gap-2'>
-          <Avatar>
-            <AvatarImage 
-              src={task.avatar} 
-            />
-          </Avatar>
-          <h3 className="font-medium">{task.title}</h3>
+      <div className='flex justify-between pl-2'>
+        <div className='flex flex-col gap-2 w-full'>
+            <h3 className="text-lg font-semibold cursor-pointer hover:underline">
+              {task.title}
+            </h3>
+          
+          {task.assignedPeople.length > 0 && (
+            <div className="flex items-center gap-0.5">
+              {task.assignedPeople.map(person => (
+                <Avatar key={person.id} className="h-8 w-8">
+                  <AvatarImage 
+                    src={person.avatar} 
+                    alt={person.name}
+                  />
+                </Avatar>
+              ))}
+            </div>
+          )}
         </div>
         
-        <div>
+        <div className="flex gap-1">
           <Button 
             variant="ghost" 
             size="icon" 
             className="size-7 cursor-grab active:cursor-grabbing"
             {...listeners}
           >
-            <Move />
+            <Move className="w-4 h-4" />
           </Button>
           <Button 
             variant="ghost" 
@@ -88,11 +99,11 @@ export function TaskCard({
             className="size-7"
             onClick={() => deleteTask(task.id)}
           >
-            <Trash />
+            <Trash className="w-4 h-4" />
           </Button>
         </div>
       </div>
-      <p className="text-sm text-muted-foreground pl-2">{task.description}</p> {/* Added pl-2 here as well */}
+      <p className="text-sm text-muted-foreground pl-2 mt-2">{task.description}</p>
     </Card>
   )
 }
