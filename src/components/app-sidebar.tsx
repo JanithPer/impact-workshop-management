@@ -58,10 +58,6 @@ const data = {
       icon: ReceiptText,
       items: [
         {
-          title: "All Orders",
-          url: "#",
-        },
-        {
           title: "Repair Orders",
           url: "/orders/repair-orders",
         },
@@ -72,6 +68,10 @@ const data = {
         {
           title: "Job Page",
           url: "/orders/job",
+        },
+        {
+          title: "Task Page",
+          url: "/orders/job/task",
         },
       ],
     },

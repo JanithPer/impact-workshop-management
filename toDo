@@ -14,10 +14,13 @@ Jobs:
     Add Job Page--done
     Task Cards in Job page--done
     Task page(refer email)
-        Images
-        Notes
-        Time Tracking
+        Images--done
+        Notes/Comments--done
+        Time Tracking--done
         Add items from inventory
+
+UserCardNavbar
+    Change Accordingly
 
 Customer:
     Add Customer page
