@@ -44,11 +44,11 @@ const data = {
         },
         {
           title: "History",
-          url: "#",
+          url: "/underconstruction",
         },
         {
           title: "Low Stock",
-          url: "#",
+          url: "/underconstruction",
         },
       ],
     },
@@ -63,7 +63,7 @@ const data = {
         },
         {
           title: "Recent Orders",
-          url: "#",
+          url: "/underconstruction",
         },
         {
           title: "Job Page",
@@ -82,15 +82,15 @@ const data = {
       items: [
         {
           title: "All Documents",
-          url: "#",
+          url: "/underconstruction",
         },
         {
           title: "Bookmarks",
-          url: "#",
+          url: "/underconstruction",
         },
         {
           title: "AI Help",
-          url: "#",
+          url: "/underconstruction",
         },
       ],
     },
@@ -101,7 +101,7 @@ const data = {
       items: [
         {
           title: "General",
-          url: "#",
+          url: "/underconstruction",
         },
         {
           title: "Users",
@@ -123,7 +123,7 @@ const data = {
     },
     {
       name: "Customers",
-      url: "#",
+      url: "/underconstruction",
       icon: User,
     },
     {
