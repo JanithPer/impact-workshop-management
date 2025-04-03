@@ -4,7 +4,7 @@ Navbar:
     change menu items properly--done
 
 Calendar:
-    Add color based on task
+    Add color based on task--done
     Fix dark mode colors
 
 Kanban:
@@ -28,5 +28,7 @@ Customer:
 Directory
     All Directory Page-(cards col-4)
     AI chat page
+
+UnderConstructionPage
 
 Dashboard

@@ -1,84 +1,94 @@
-// data.ts
 export interface Event {
-    title: string;
-    start: Date;
-    end: Date;
-  }
-  
-  export const events: Event[] = [
-    {
-      title: 'Registration Check',
-      start: new Date(2025, 2, 26, 10, 0),
-      end: new Date(2025, 2, 26, 11, 0),
-    },
-    {
-      title: 'Replace Brakes',
-      start: new Date(2025, 2, 26, 12, 0),
-      end: new Date(2025, 2, 27, 6, 0),
-    },
-    {
-      title: 'Replace Wiper Blades',
-      start: new Date(2025, 2, 13, 11, 0),
-      end: new Date(2025, 2, 13, 11, 3),
-    },
-    {
-      title: 'Oil Change',
-      start: new Date(2025, 2, 28, 14, 0),
-      end: new Date(2025, 2, 28, 15, 0),
-    },
-    {
-      title: 'Tire Rotation',
-      start: new Date(2025, 3, 1, 9, 0),
-      end: new Date(2025, 3, 1, 10, 30),
-    },
-    {
-      title: 'Car Wash',
-      start: new Date(2025, 2, 20, 15, 0),
-      end: new Date(2025, 2, 20, 15, 45),
-    },
-    {
-      title: 'Annual Inspection',
-      start: new Date(2025, 3, 5, 11, 0),
-      end: new Date(2025, 3, 5, 12, 0),
-    },
-    {
-    title: 'Battery Check',
-    start: new Date(2025, 2, 29, 9, 30),
-    end: new Date(2025, 2, 29, 10, 0),
+  title: string;
+  start: Date;
+  end: Date;
+  colorMode: 'success' | 'danger' | 'warning' | 'info';
+}
+
+export const events: Event[] = [
+  // February Events
+  {
+    title: 'Replace Wiper Blades',
+    start: new Date(2025, 1, 13, 11, 0), // Note: Month is 0-indexed, so 1 = February
+    end: new Date(2025, 1, 13, 11, 30),
+    colorMode: 'warning',
   },
   {
-    title: 'Air Filter Replacement',
-    start: new Date(2025, 3, 2, 13, 0),
-    end: new Date(2025, 3, 2, 13, 45),
+    title: 'Team Meeting',
+    start: new Date(2025, 1, 15, 14, 0),
+    end: new Date(2025, 1, 15, 15, 30),
+    colorMode: 'info',
   },
   {
-    title: 'Wheel Alignment',
-    start: new Date(2025, 3, 7, 10, 0),
-    end: new Date(2025, 3, 7, 11, 30),
+    title: 'Project Deadline',
+    start: new Date(2025, 1, 28, 9, 0),
+    end: new Date(2025, 1, 28, 17, 0),
+    colorMode: 'danger',
+  },
+
+  // March Events (from your original data)
+  {
+    title: 'Registration Check',
+    start: new Date(2025, 2, 26, 10, 0), // 2 = March
+    end: new Date(2025, 2, 26, 11, 0),
+    colorMode: 'info',
   },
   {
-    title: 'Coolant Flush',
-    start: new Date(2025, 3, 10, 14, 0),
-    end: new Date(2025, 3, 10, 15, 30),
+    title: 'Replace Brakes',
+    start: new Date(2025, 2, 26, 12, 0),
+    end: new Date(2025, 2, 27, 6, 0),
+    colorMode: 'danger',
+  },
+
+  // April Events
+  {
+    title: 'Oil Change',
+    start: new Date(2025, 3, 5, 9, 0), // 3 = April
+    end: new Date(2025, 3, 5, 10, 0),
+    colorMode: 'warning',
   },
   {
-    title: 'Detailing Service',
-    start: new Date(2025, 3, 15, 9, 0),
-    end: new Date(2025, 3, 15, 12, 0),
+    title: 'Client Presentation',
+    start: new Date(2025, 3, 15, 13, 0),
+    end: new Date(2025, 3, 15, 15, 0),
+    colorMode: 'info',
   },
   {
-    title: 'Transmission Fluid Change',
-    start: new Date(2025, 3, 20, 11, 0),
-    end: new Date(2025, 3, 20, 13, 0),
+    title: 'System Maintenance',
+    start: new Date(2025, 3, 20, 22, 0),
+    end: new Date(2025, 3, 21, 2, 0),
+    colorMode: 'danger',
   },
   {
-    title: 'Headlight Polishing',
-    start: new Date(2025, 3, 25, 15, 0),
-    end: new Date(2025, 3, 25, 15, 45),
+    title: 'Project Completion',
+    start: new Date(2025, 3, 30, 9, 0),
+    end: new Date(2025, 3, 30, 17, 0),
+    colorMode: 'success',
+  },
+
+  // May Events
+  {
+    title: 'Team Building Event',
+    start: new Date(2025, 4, 10, 10, 0), // 4 = May
+    end: new Date(2025, 4, 10, 16, 0),
+    colorMode: 'success',
   },
   {
-    title: 'Brake Fluid Check',
-    start: new Date(2025, 3, 28, 10, 0),
-    end: new Date(2025, 3, 28, 10, 30),
+    title: 'Tire Rotation',
+    start: new Date(2025, 4, 15, 14, 0),
+    end: new Date(2025, 4, 15, 15, 0),
+    colorMode: 'warning',
   },
-  ];
+  {
+    title: 'Budget Review',
+    start: new Date(2025, 4, 22, 11, 0),
+    end: new Date(2025, 4, 22, 12, 30),
+    colorMode: 'info',
+  },
+  {
+    title: 'Server Upgrade',
+    start: new Date(2025, 4, 28, 20, 0),
+    end: new Date(2025, 4, 29, 4, 0),
+    colorMode: 'danger',
+  },
+];
