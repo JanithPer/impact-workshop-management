@@ -32,3 +32,45 @@ Directory
 UnderConstructionPage--done
 
 Dashboard
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Pages that work(frontend only):
+Inventory:
+    All Parts
+
+Orders:
+    Repair Orders
+    Job Page
+    Task Page
+
+Directory:
+    All Documents
+
+Settings:
+    Users
+
+Kanban
+Calendar
+Customers
+Login
+
+Pages that are under construction:
+Dashboard
+Inventory:
+    History
+    Low Stock
+
+Orders:
+    Recent Orders
+
+Directory:
+    Bookmarks
+    AI Help
+
+Settings:
+    General
+
+Customers
