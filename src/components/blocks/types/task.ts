@@ -12,5 +12,5 @@ export type Task = {
     description: string
     assignedPeople: AssignedPerson[];
     status: 'todo' | 'in-progress' | 'done'
-    colorMode:'success' | 'danger' | 'warning' | 'info'
+    colorMode?:'success' | 'danger' | 'warning' | 'info'
   }
