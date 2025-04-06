@@ -17,18 +17,18 @@ Jobs:
         Images--done
         Notes/Comments--done
         Time Tracking--done
-        Add items from inventory
+        <!-- Add items from inventory -->
 
 UserCardNavbar
-    Change Accordingly
+    Change Accordingly--done
 
-Customer:
+<!-- Customer:
     Add Customer page
 
 Directory
     All Directory Page-(cards col-4)
-    AI chat page
+    AI chat page -->
 
-UnderConstructionPage
+UnderConstructionPage--done
 
 Dashboard
