@@ -12,11 +12,11 @@ interface PDFFile {
 }
 
 const PDF_FILES: PDFFile[] = [
-  { id: 1, name: 'Annual Report 2023' },
-  { id: 2, name: 'Financial Statements Q1' },
-  { id: 3, name: 'Employee Handbook' },
-  { id: 4, name: 'Project Proposal Template' },
-  { id: 5, name: 'Company Policies' },
+  { id: 1, name: 'Diesel Engine Maintenance Guide' },
+  { id: 2, name: 'Heavy-Duty Truck Repair Manual' },
+  { id: 3, name: 'Garage Safety Protocols' },
+  { id: 4, name: 'Fuel Injection System Diagnostics' },
+  { id: 5, name: 'EPA Emissions Compliance Checklist' },
 ]
 
 const DirectoryPage = () => {
@@ -51,7 +51,7 @@ const DirectoryPage = () => {
                 href={`/pdfs/${pdf.id}.pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border rounded-lg p-4 hover:bg-gray-50 transition-colors flex items-center gap-3"
+                className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex items-center gap-3"
               >
                 <FileText className="text-red-500" size={24} />
                 <div>
