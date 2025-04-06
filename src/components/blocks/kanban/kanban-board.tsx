@@ -58,18 +58,6 @@ export function KanbanBoard({ initialData = initialTasks }: { initialData?: Task
     }
   }
 
-  const addTask = (status: Task['status'], title: string, description: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title,
-      description,
-      status,
-      assignedPeople: [],
-      colorMode: 'info'
-    }
-    setTasks([...tasks, newTask])
-  }
-
   const deleteTask = (id: string) => {
     setTasks(tasks.filter(task => task.id !== id))
   }
@@ -87,7 +75,6 @@ export function KanbanBoard({ initialData = initialTasks }: { initialData?: Task
               key={status}
               status={status}
               tasks={tasks.filter(task => task.status === status)}
-              addTask={addTask}
               deleteTask={deleteTask}
             />
           ))}
