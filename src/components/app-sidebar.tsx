@@ -82,7 +82,7 @@ const data = {
       items: [
         {
           title: "All Documents",
-          url: "/underconstruction",
+          url: "/directory",
         },
         {
           title: "Bookmarks",
