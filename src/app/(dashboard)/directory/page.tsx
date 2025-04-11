@@ -9,15 +9,36 @@ import { useState } from 'react'
 interface PDFFile {
   id: number
   name: string
+  description: string
 }
 
 const PDF_FILES: PDFFile[] = [
-  { id: 1, name: 'Diesel Engine Maintenance Guide' },
-  { id: 2, name: 'Heavy-Duty Truck Repair Manual' },
-  { id: 3, name: 'Garage Safety Protocols' },
-  { id: 4, name: 'Fuel Injection System Diagnostics' },
-  { id: 5, name: 'EPA Emissions Compliance Checklist' },
-]
+  {
+    id: 1,
+    name: 'Diesel Engine Maintenance Guide',
+    description: 'A comprehensive guide on servicing and maintaining diesel engines.',
+  },
+  {
+    id: 2,
+    name: 'Heavy-Duty Truck Repair Manual',
+    description: 'Step-by-step repair instructions for heavy-duty trucks and their components.',
+  },
+  {
+    id: 3,
+    name: 'Garage Safety Protocols',
+    description: 'Essential safety procedures and best practices for working in a garage environment.',
+  },
+  {
+    id: 4,
+    name: 'Fuel Injection System Diagnostics',
+    description: 'Diagnostic techniques and troubleshooting tips for fuel injection systems.',
+  },
+  {
+    id: 5,
+    name: 'EPA Emissions Compliance Checklist',
+    description: 'A checklist to ensure vehicles meet EPA emissions regulations.',
+  },
+];
 
 const DirectoryPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -51,12 +72,12 @@ const DirectoryPage = () => {
                 href={`/pdfs/${pdf.id}.pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex items-center gap-3"
+                className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex gap-3"
               >
                 <FileText className="text-red-500" size={24} />
                 <div>
                   <h3 className="font-medium">{pdf.name}</h3>
-                  <p className="text-sm text-gray-500">PDF Document</p>
+                  <p className="text-sm text-gray-500">{pdf.description}</p>
                 </div>
               </Link>
             ))}
