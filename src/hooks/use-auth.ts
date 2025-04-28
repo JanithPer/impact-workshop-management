@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/store/auth.store';
 import { LoginFormData } from '@/schemas/auth';
 
 export const useLogin = () => {

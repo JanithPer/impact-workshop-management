@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore } from '@/store/auth.store';
 import { useEffect } from 'react';
 
 export function AuthLoader() {
