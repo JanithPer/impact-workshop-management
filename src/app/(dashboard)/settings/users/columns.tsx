@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type User = {
-  id: string
-  avatar: string
+  _id: string
+  avatar: {
+    url: string
+    publicId: string
+  }
   name: string
-  role: "Technician" | "Mechanic"
+  role: string
   email: string
 }
 
@@ -52,12 +53,12 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "avatar",
     header: "Avatar",
     cell: ({ row }) => {
-        const avatarUrl = row.getValue("avatar") as string
-        const userName = row.getValue("name") as string // For fallback initials
-  
+        const avatarData = row.getValue("avatar") as { url: string, publicId: string }
+        const userName = row.getValue("name") as string
+
         return (
           <Avatar>
-            <AvatarImage src={avatarUrl} alt={`${userName}'s avatar`} />
+            <AvatarImage src={avatarData.url} alt={`${userName}'s avatar`} />
             <AvatarFallback>
               {userName
                 .split(" ")
@@ -95,7 +96,7 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original
- 
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -107,7 +108,7 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
+              onClick={() => navigator.clipboard.writeText(user._id)}
             >
               Edit
             </DropdownMenuItem>
