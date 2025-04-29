@@ -3,9 +3,11 @@ import { Button } from '../ui/button';
 
 interface PageTitleProps {
   name: string;
+  onDelete?: () => void;
+  deleteDisabled?: boolean;
 }
 
-const PageTitle: React.FC<PageTitleProps>= ({ name }) => {
+const PageTitle: React.FC<PageTitleProps>= ({ name, onDelete, deleteDisabled }) => {
   return (
     <>
     <div className="px-4 flex justify-between">
@@ -14,7 +16,13 @@ const PageTitle: React.FC<PageTitleProps>= ({ name }) => {
       <Button variant="outline" size="icon" className="rounded-full cursor-pointer">
         <Plus />
       </Button>  
-      <Button variant="outline" size="icon" className="rounded-full cursor-pointer">
+      <Button 
+        variant="outline" 
+        size="icon" 
+        className="rounded-full cursor-pointer"
+        onClick={onDelete}
+        disabled={deleteDisabled}
+      >
         <Trash />
       </Button>
       <Button variant="outline" size="icon" className="rounded-full cursor-pointer">

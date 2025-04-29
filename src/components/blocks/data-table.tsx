@@ -36,19 +36,18 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   filterColumn: string
+  onSelectionChange?: (selectedRows: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   filterColumn,
+  onSelectionChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
@@ -69,6 +68,13 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  React.useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRowsData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+      onSelectionChange(selectedRowsData);
+    }
+  }, [rowSelection, table, onSelectionChange]);
 
   return (
   <div>
@@ -109,7 +115,6 @@ export function DataTable<TData, TValue>({
             })}
         </DropdownMenuContent>
       </DropdownMenu>
-
     </div>
     <div className="rounded-md border">
       <Table>
@@ -178,7 +183,6 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
-
   </div>    
   )
 }

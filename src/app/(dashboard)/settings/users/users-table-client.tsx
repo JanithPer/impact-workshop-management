@@ -1,33 +1,49 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { User, columns } from "./columns"
-import { DataTable } from "@/components/blocks/data-table"
 import { api } from "@/lib/axios"
+import { DataTable } from "@/components/blocks/data-table"
+import { columns, User } from "./columns"
+import { Skeleton } from "@/components/ui/skeleton"
+
+interface UsersTableClientProps {
+  onSelectionChange: (selectedUsers: User[]) => void;
+}
 
 const fetchUsers = async (): Promise<User[]> => {
-  const response = await api.get<{ message: string; data: User[] }>('/users');
-  return response.data.data;
-};
+  const response = await api.get("/users")
+  return response.data.data
+}
 
-export default function UsersTableClient() {
-  const { data, isLoading, isError, error } = useQuery<User[], Error>({
+const UsersTableClient: React.FC<UsersTableClientProps> = ({ onSelectionChange }) => {
+  const { data: users, isLoading, error } = useQuery<User[]>({
     queryKey: ['users'],
     queryFn: fetchUsers,
-  });
+  })
 
   if (isLoading) {
-    return <div className="container mx-auto px-4">Loading users...</div>;
+    return (
+      <div className="container mx-auto px-4 py-4">
+        <Skeleton className="h-10 w-1/4 mb-4" />
+        <Skeleton className="h-96 w-full" />
+      </div>
+    )
   }
 
-  if (isError) {
-    console.error("Failed to fetch users:", error);
-    return <div className="container mx-auto px-4 text-red-600">Error: {error.message || "An error occurred while fetching users."}</div>;
+  if (error) {
+    return <div className="container mx-auto px-4 text-red-500">Error loading users.</div>
   }
 
   return (
     <div className="container mx-auto px-4">
-      <DataTable columns={columns} data={data ?? []} filterColumn="name" />
+      <DataTable
+        columns={columns}
+        data={users || []}
+        filterColumn="name"
+        onSelectionChange={onSelectionChange}
+      />
     </div>
   )
 }
+
+export default UsersTableClient
