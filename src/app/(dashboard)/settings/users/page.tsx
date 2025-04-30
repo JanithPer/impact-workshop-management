@@ -7,11 +7,13 @@ import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/axios"
 import { DeleteUsersDialog } from "./delete-users-dialog"
+import { AddUserDialog } from "./add-user-dialog"
 import { User } from "./columns"
 
 const UsersPage = () => {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([])
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
   const queryClient = useQueryClient()
 
   const deleteMutation = useMutation({
@@ -29,18 +31,23 @@ const UsersPage = () => {
       <PageHeader firstLinkName="Settings" secondLinkName="Users" />
       <PageTitle
         name="Users"
-        onDelete={() => setDialogOpen(true)}
+        onAdd={() => setAddDialogOpen(true)}
+        onDelete={() => setDeleteDialogOpen(true)}
         deleteDisabled={selectedUsers.length === 0}
       />
       <UsersTableClient onSelectionChange={setSelectedUsers} />
       <DeleteUsersDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
         onConfirm={() => {
           deleteMutation.mutate(selectedUsers.map(u => u._id))
-          setDialogOpen(false)
+          setDeleteDialogOpen(false)
         }}
         count={selectedUsers.length}
+      />
+      <AddUserDialog 
+        open={addDialogOpen} 
+        onOpenChange={setAddDialogOpen} 
       />
     </div>
   )
