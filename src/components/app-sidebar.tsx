@@ -123,7 +123,7 @@ const data = {
     },
     {
       name: "Customers",
-      url: "/underconstruction",
+      url: "/customers", // Updated URL
       icon: User,
     },
     {
