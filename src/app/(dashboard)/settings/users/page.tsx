@@ -9,6 +9,7 @@ import { api } from "@/lib/axios"
 import { DeleteUsersDialog } from "./delete-users-dialog"
 import { AddUserDialog } from "./add-user-dialog"
 import { User } from "./columns"
+import { toast } from 'sonner'; // Import toast
 
 const UsersPage = () => {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([])
@@ -23,6 +24,12 @@ const UsersPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
       setSelectedUsers([])
+      toast.success(`${selectedUsers.length} user${selectedUsers.length !== 1 ? 's' : ''} deleted successfully!`); // Add success toast
+    },
+    onError: (error: any) => { // Optional: Add error handling
+      const errorMessage = error.response?.data?.message || 'Failed to delete users. Please try again.';
+      toast.error(errorMessage);
+      console.error("Error deleting users:", error);
     }
   })
 

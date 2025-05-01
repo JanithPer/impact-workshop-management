@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { AuthLoader } from "@/components/auth-loader";
 import { QueryClientProvider } from "@/providers/query-client-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="light">
             <AuthLoader />
             {children}
+            <Toaster /> 
           </ThemeProvider>
         </QueryClientProvider>
       </body>
