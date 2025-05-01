@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'; // Added useState
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -30,17 +30,29 @@ interface EditUserDialogProps {
 }
 
 // Define Zod schema for validation
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 const editUserSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(50, { message: "Name cannot exceed 50 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   role: z.enum(['user', 'admin'], { required_error: "Role is required." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }).optional().or(z.literal('')), // Optional password
+  avatar: z
+    .instanceof(File, { message: "Avatar must be a file." })
+    .optional()
+    .refine((file) => !file || file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
 });
 
 type EditUserFormValues = z.infer<typeof editUserSchema>;
 
 export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps) {
   const queryClient = useQueryClient();
+  const [preview, setPreview] = useState<string | null>(null);
 
   const form = useForm<EditUserFormValues>({
     resolver: zodResolver(editUserSchema),
@@ -49,19 +61,20 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       email: '',
       role: 'user',
       password: '',
+      avatar: undefined,
     },
   });
 
   // Mutation for updating user
   const mutation = useMutation({
-    mutationFn: async (updateData: EditUserFormValues) => {
+    mutationFn: async (formData: FormData | EditUserFormValues) => {
       if (!user) throw new Error("User not selected");
-      // Only include password if it's not empty
-      const payload: Partial<EditUserFormValues> = { ...updateData };
-      if (!payload.password || payload.password.trim() === '') {
-        delete payload.password;
-      }
-      const response = await api.patch(`/users/${user._id}`, payload);
+
+      const headers = formData instanceof FormData
+        ? { 'Content-Type': 'multipart/form-data' }
+        : { 'Content-Type': 'application/json' };
+
+      const response = await api.patch(`/users/${user._id}`, formData, { headers });
       return response.data;
     },
     onSuccess: () => {
@@ -69,6 +82,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       toast.success('User updated successfully!');
       onOpenChange(false);
       form.reset(); // Reset form on success
+      setPreview(null); // Clear preview on success
     },
     onError: (error: any) => {
       const errorMessage = error.response?.data?.message || 'Failed to update user. Please try again.';
@@ -85,14 +99,37 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
         email: user.email,
         role: user.role as 'user' | 'admin',
         password: '', // Always clear password field on open
+        avatar: undefined, // Clear avatar file input
       });
+      setPreview(user.avatar?.url || null); // Set initial preview
     } else if (!open) {
         form.reset(); // Reset form when dialog closes
+        setPreview(null); // Clear preview when dialog closes
     }
   }, [user, open, form]);
 
   const onSubmit = (data: EditUserFormValues) => {
-    mutation.mutate(data);
+    let submissionData: FormData | EditUserFormValues;
+
+    if (data.avatar) {
+      submissionData = new FormData();
+      submissionData.append('name', data.name);
+      submissionData.append('email', data.email);
+      submissionData.append('role', data.role);
+      if (data.password && data.password.trim() !== '') {
+        submissionData.append('password', data.password);
+      }
+      submissionData.append('avatar', data.avatar);
+    } else {
+      // Send JSON if no avatar is uploaded
+      submissionData = { ...data };
+      delete submissionData.avatar; // Remove avatar field if empty
+      if (!submissionData.password || submissionData.password.trim() === '') {
+        delete submissionData.password; // Remove password if empty
+      }
+    }
+
+    mutation.mutate(submissionData);
   };
 
   if (!user) return null;
@@ -109,9 +146,9 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex items-center gap-4">
-                <Avatar>
-                    <AvatarImage src={user.avatar?.url} alt={`${user.name}'s avatar`} />
-                    <AvatarFallback>
+                <Avatar className="h-20 w-20">
+                    <AvatarImage src={preview || user.avatar?.url} alt={`${user.name}'s avatar`} />
+                    <AvatarFallback className="text-xl">
                     {user.name
                         .split(" ")
                         .map((name) => name[0])
@@ -119,7 +156,36 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         .toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
-                {/* TODO: Add avatar upload/change functionality if needed */}
+                <FormField
+                  control={form.control}
+                  name="avatar"
+                  render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel>Change Avatar</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/png, image/jpeg, image/jpg, image/webp"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            onChange(file);
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setPreview(reader.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            } else {
+                              setPreview(user.avatar?.url || null); // Revert to original if no file selected
+                            }
+                          }}
+                          {...rest}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
             <FormField
               control={form.control}
