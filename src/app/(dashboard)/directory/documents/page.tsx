@@ -7,9 +7,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { api } from '@/lib/axios' // Import the configured api instance
-import { toast } from 'sonner' // Assuming sonner is used for toasts
-import { AddDocumentDialog } from './add-document-dialog' // Import the new dialog
+import { api } from '@/lib/axios'
+import { toast } from 'sonner'
+import { AddDocumentDialog } from './add-document-dialog'
+import { ConfirmationDialog } from './confirmation-dialog';
 
 interface DocumentFile {
   url: string;
@@ -50,22 +51,6 @@ const addDocument = async (formData: FormData): Promise<Document> => {
     },
   })
 
-  // REMOVE the addMutation definition from here
-  // --- Start Deletion ---
-  // Add document mutation
-  // const addMutation = useMutation<Document, Error, FormData>({
-  //   mutationFn: addDocument,
-  //   onSuccess: (newDocument) => {
-  //     toast.success(`Document "${newDocument.name}" added successfully`)
-  //     queryClient.invalidateQueries({ queryKey: ['documents'] })
-  //     setAddDialogOpen(false) // Close dialog on success
-  //   },
-  //   onError: (error) => {
-  //     toast.error(`Failed to add document: ${error.message}`)
-  //   },
-  // });
-  // --- End Deletion ---
-
   if (!data.success) {
     throw new Error(data.message || 'Failed to add document');
   }
@@ -75,6 +60,8 @@ const addDocument = async (formData: FormData): Promise<Document> => {
 const DirectoryPage = () => {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false); // State for confirmation dialog
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null); // State for document ID to delete
   const queryClient = useQueryClient()
 
   // Fetch documents using useQuery
@@ -108,9 +95,18 @@ const DirectoryPage = () => {
     },
   })
 
-  const handleDelete = (id: string) => {
-    deleteMutation.mutate(id)
+  const handleDeleteClick = (id: string) => {
+    setDocumentToDelete(id); // Set the ID of the document to delete
+    setConfirmDeleteDialogOpen(true); // Open the confirmation dialog
   }
+
+  const handleConfirmDelete = () => {
+    if (documentToDelete) {
+      deleteMutation.mutate(documentToDelete);
+    }
+    setConfirmDeleteDialogOpen(false); // Close the dialog after confirmation
+    setDocumentToDelete(null); // Reset the document ID
+  };
 
   const filteredDocuments = documents?.filter(doc =>
     doc.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -181,9 +177,9 @@ const DirectoryPage = () => {
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    handleDelete(doc._id)
+                    handleDeleteClick(doc._id) // Use the new handler
                   }}
-                  disabled={deleteMutation.isPending} // Disable button while deleting
+                  disabled={deleteMutation.isPending && deleteMutation.variables === doc._id} // Disable only if this specific doc is being deleted
                   className="text-gray-500 hover:text-red-600 flex-shrink-0"
                   aria-label={`Delete ${doc.name}`}
                 >
@@ -209,8 +205,19 @@ const DirectoryPage = () => {
       <AddDocumentDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
-        onSubmit={(formData) => addMutation.mutate(formData)}
+        onSubmit={addMutation.mutate}
         isLoading={addMutation.isPending}
+      />
+
+      {/* Confirmation Dialog for Deletion */}
+      <ConfirmationDialog
+        open={confirmDeleteDialogOpen}
+        onOpenChange={setConfirmDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this document? This action cannot be undone."
+        confirmText="Delete"
+        isLoading={deleteMutation.isPending && deleteMutation.variables === documentToDelete} // Show loading state during deletion
       />
     </div>
   )

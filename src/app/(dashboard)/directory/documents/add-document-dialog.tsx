@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"; // Import Textarea
+import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from 'lucide-react';
 
@@ -26,15 +26,15 @@ interface AddDocumentDialogProps {
   isLoading: boolean;
 }
 
-// Define Zod schema for validation
+
 const addDocumentSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(100, { message: "Name cannot exceed 100 characters." }),
   description: z.string().max(500, { message: "Description cannot exceed 500 characters." }).optional(),
-  // Updated file validation
+  
   file: z.any()
     .refine((files) => files instanceof FileList && files.length === 1, 'File is required.') // Check if it's a FileList with one file
     .refine((files) => files?.[0]?.type === 'application/pdf', 'Only PDF files are allowed.') // Check if the file is a PDF
-    // Optional: Add a size check if needed
+    
     // .refine((files) => files?.[0]?.size <= 2 * 1024 * 1024, `File size must be less than 2MB.`)
 });
 
@@ -61,8 +61,8 @@ export function AddDocumentDialog({ open, onOpenChange, onSubmit, isLoading }: A
       formData.append('file', data.file[0]);
     }
     onSubmit(formData);
-    // Reset form fields manually after successful submission is handled by parent
-    // form.reset(); // Consider resetting in parent's onSuccess
+    
+    
   };
 
   // Handle dialog close/cancel
