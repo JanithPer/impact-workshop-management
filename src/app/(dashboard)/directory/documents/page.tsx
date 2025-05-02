@@ -2,10 +2,10 @@
 
 import PageHeader from '@/components/blocks/page-header'
 import { Input } from '@/components/ui/input'
-import { FileText, Search, Trash2 } from 'lucide-react' // Import Trash2 icon
+import { FileText, Plus, Search, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button' // Import Button component if needed
+import { Button } from '@/components/ui/button'
 
 interface PDFFile {
   id: number
@@ -23,11 +23,8 @@ const PDF_FILES: PDFFile[] = [
 const DirectoryPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Placeholder delete function - replace with actual logic
   const handleDelete = (id: number) => {
     console.log(`Delete PDF with id: ${id}`)
-    // Add logic here to remove the PDF from the list or call an API
-    // For now, it just logs to the console
   }
 
   const filteredPDFs = PDF_FILES.filter(pdf =>
@@ -40,7 +37,7 @@ const DirectoryPage = () => {
       <div className="px-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-2xl">Directory</h2>
-
+         <div className='flex gap-2'>
           <div className="relative w-full sm:w-64">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
@@ -48,6 +45,10 @@ const DirectoryPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             />
+          </div>
+          <Button variant="outline" size="icon" className="rounded-xl cursor-pointer">
+            <Plus />
+          </Button>
           </div>
         </div>
 
@@ -74,8 +75,8 @@ const DirectoryPage = () => {
                   variant="ghost"
                   size="icon"
                   onClick={(e) => {
-                    e.preventDefault() // Prevent link navigation
-                    e.stopPropagation() // Prevent triggering hover effects on parent
+                    e.preventDefault()
+                    e.stopPropagation()
                     handleDelete(pdf.id)
                   }}
                   className="text-gray-500 hover:text-red-600 flex-shrink-0"
