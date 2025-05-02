@@ -2,13 +2,14 @@
 
 import PageHeader from '@/components/blocks/page-header'
 import { Input } from '@/components/ui/input'
-import { FileText, Plus, Search, Trash2, Loader2 } from 'lucide-react'
+import { FileText, Plus, Search, Trash2, Loader2, Upload } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/axios' // Import the configured api instance
 import { toast } from 'sonner' // Assuming sonner is used for toasts
+import { AddDocumentDialog } from './add-document-dialog' // Import the new dialog
 
 interface DocumentFile {
   url: string;
@@ -41,7 +42,38 @@ const deleteDocument = async (id: string): Promise<void> => {
   }
 }
 
+// API function to add a document
+const addDocument = async (formData: FormData): Promise<Document> => {
+  const { data } = await api.post('/documents', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
+  // REMOVE the addMutation definition from here
+  // --- Start Deletion ---
+  // Add document mutation
+  // const addMutation = useMutation<Document, Error, FormData>({
+  //   mutationFn: addDocument,
+  //   onSuccess: (newDocument) => {
+  //     toast.success(`Document "${newDocument.name}" added successfully`)
+  //     queryClient.invalidateQueries({ queryKey: ['documents'] })
+  //     setAddDialogOpen(false) // Close dialog on success
+  //   },
+  //   onError: (error) => {
+  //     toast.error(`Failed to add document: ${error.message}`)
+  //   },
+  // });
+  // --- End Deletion ---
+
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to add document');
+  }
+  return data.data;
+};
+
 const DirectoryPage = () => {
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const queryClient = useQueryClient()
 
@@ -60,6 +92,19 @@ const DirectoryPage = () => {
     },
     onError: (error) => {
       toast.error(`Failed to delete document: ${error.message}`)
+    },
+  })
+
+  // Add document mutation (This is the correct place)
+  const addMutation = useMutation<Document, Error, FormData>({
+    mutationFn: addDocument,
+    onSuccess: (newDocument) => {
+      toast.success(`Document "${newDocument.name}" added successfully`)
+      queryClient.invalidateQueries({ queryKey: ['documents'] })
+      setAddDialogOpen(false) // Close dialog on success
+    },
+    onError: (error) => {
+      toast.error(`Failed to add document: ${error.message}`)
     },
   })
 
@@ -86,8 +131,13 @@ const DirectoryPage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          {/* TODO: Implement Add Document functionality */}
-          <Button variant="outline" size="icon" className="rounded-xl cursor-pointer">
+          {/* Button to open the Add Document Dialog */}
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="rounded-xl cursor-pointer"
+            onClick={() => setAddDialogOpen(true)} // Open the dialog
+          >
             <Plus />
           </Button>
           </div>
@@ -154,8 +204,15 @@ const DirectoryPage = () => {
           </div>
         )}
       </div>
+
+      {/* Render the Add Document Dialog */}
+      <AddDocumentDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSubmit={(formData) => addMutation.mutate(formData)}
+        isLoading={addMutation.isPending}
+      />
     </div>
   )
 }
-
 export default DirectoryPage
