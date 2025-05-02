@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sidebar"
 import LogoHeader from "./logo-header"
 
-// This is sample data.
+
 const data = {
   user: {
     name: "Brad Evans",
@@ -36,15 +36,15 @@ const data = {
       title: "Inventory",
       url: "#",
       icon: Package,
-      isActive: true,
+
       items: [
         {
           title: "All Parts",
           url: "/inventory",
         },
         {
-          title: "History",
-          url: "/underconstruction",
+          title: "Parts Inventory",
+          url: "/inventory/parts-inventory",
         },
         {
           title: "Low Stock",
@@ -123,11 +123,11 @@ const data = {
     },
     {
       name: "Customers",
-      url: "/customers", // Updated URL
+      url: "/customers",
       icon: User,
     },
     {
-      name: "Login",
+      name: "Login", // Note: Login might not belong in the main authenticated sidebar
       url: "/login",
       icon: Lock,
     },
@@ -135,12 +135,14 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <LogoHeader />
       </SidebarHeader>
       <SidebarContent>
+
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>

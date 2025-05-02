@@ -3,7 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Next Error Messages */
 nextjs-portal {
   display: none;
 }
@@ -124,4 +123,13 @@ nextjs-portal {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+[data-component="sidebar-menu-button"][data-active="true"],
+[data-component="sidebar-menu-sub-button"][data-active="true"] {
+
+  background-color: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  font-weight: 600;
 }
