@@ -85,10 +85,6 @@ const data = {
           url: "/directory/documents",
         },
         {
-          title: "Bookmarks",
-          url: "/underconstruction",
-        },
-        {
           title: "AI Help",
           url: "/underconstruction",
         },

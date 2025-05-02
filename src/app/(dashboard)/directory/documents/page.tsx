@@ -2,34 +2,74 @@
 
 import PageHeader from '@/components/blocks/page-header'
 import { Input } from '@/components/ui/input'
-import { FileText, Plus, Search, Trash2 } from 'lucide-react'
+import { FileText, Plus, Search, Trash2, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { api } from '@/lib/axios' // Import the configured api instance
+import { toast } from 'sonner' // Assuming sonner is used for toasts
 
-interface PDFFile {
-  id: number
-  name: string
+interface DocumentFile {
+  url: string;
+  publicId: string;
 }
 
-const PDF_FILES: PDFFile[] = [
-  { id: 1, name: 'Diesel Engine Maintenance Guide' },
-  { id: 2, name: 'Heavy-Duty Truck Repair Manual' },
-  { id: 3, name: 'Garage Safety Protocols' },
-  { id: 4, name: 'Fuel Injection System Diagnostics' },
-  { id: 5, name: 'EPA Emissions Compliance Checklist' },
-]
+interface Document {
+  _id: string; // Changed from id to _id
+  name: string;
+  description?: string;
+  file: DocumentFile;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// API function to fetch documents
+const fetchDocuments = async (): Promise<Document[]> => {
+  const { data } = await api.get('/documents') // Use api instance
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to fetch documents')
+  }
+  return data.data
+}
+
+// API function to delete a document
+const deleteDocument = async (id: string): Promise<void> => {
+  const { data } = await api.delete(`/documents/${id}`) // Use api instance and correct endpoint
+  if (!data.success) {
+    throw new Error(data.message || 'Failed to delete document')
+  }
+}
 
 const DirectoryPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
+  const queryClient = useQueryClient()
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete PDF with id: ${id}`)
+  // Fetch documents using useQuery
+  const { data: documents, isLoading, error } = useQuery<Document[], Error>({
+    queryKey: ['documents'],
+    queryFn: fetchDocuments,
+  })
+
+  // Delete document mutation
+  const deleteMutation = useMutation<void, Error, string>({
+    mutationFn: deleteDocument,
+    onSuccess: () => {
+      toast.success('Document deleted successfully')
+      queryClient.invalidateQueries({ queryKey: ['documents'] }) // Refetch documents after deletion
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete document: ${error.message}`)
+    },
+  })
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id)
   }
 
-  const filteredPDFs = PDF_FILES.filter(pdf =>
-    pdf.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredDocuments = documents?.filter(doc =>
+    doc.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ) ?? []
 
   return (
     <div>
@@ -41,34 +81,48 @@ const DirectoryPage = () => {
           <div className="relative w-full sm:w-64">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-            placeholder="Search"
+            placeholder="Search Documents"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          {/* TODO: Implement Add Document functionality */}
           <Button variant="outline" size="icon" className="rounded-xl cursor-pointer">
             <Plus />
           </Button>
           </div>
         </div>
 
-        {filteredPDFs.length > 0 ? (
+        {isLoading && (
+          <div className="flex justify-center items-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <p className="ml-2 text-gray-500">Loading documents...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-8 text-red-500">
+            <p>Error loading documents: {error.message}</p>
+          </div>
+        )}
+
+        {!isLoading && !error && filteredDocuments.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredPDFs.map((pdf) => (
+            {filteredDocuments.map((doc) => (
               <div
-                key={pdf.id}
+                key={doc._id}
                 className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex items-center justify-between gap-3"
               >
                 <Link
-                  href={`/pdfs/${pdf.id}.pdf`}
+                  href={doc.file.url} // Link directly to the file URL
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 flex-grow"
+                  className="flex items-center gap-3 flex-grow min-w-0" // Added min-w-0 for flex shrink
                 >
                   <FileText className="text-red-500 flex-shrink-0" size={24} />
-                  <div className="flex-grow">
-                    <h3 className="font-medium break-words">{pdf.name}</h3>
-                    <p className="text-sm text-gray-500">PDF Document</p>
+                  <div className="flex-grow overflow-hidden"> {/* Added overflow-hidden */}
+                    <h3 className="font-medium break-words truncate">{doc.name}</h3> {/* Added truncate */}
+                    <p className="text-sm text-gray-500">PDF Document</p> {/* Consider making this dynamic based on file type */}
                   </div>
                 </Link>
                 <Button
@@ -77,19 +131,26 @@ const DirectoryPage = () => {
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    handleDelete(pdf.id)
+                    handleDelete(doc._id)
                   }}
+                  disabled={deleteMutation.isPending} // Disable button while deleting
                   className="text-gray-500 hover:text-red-600 flex-shrink-0"
-                  aria-label={`Delete ${pdf.name}`}
+                  aria-label={`Delete ${doc.name}`}
                 >
-                  <Trash2 size={18} />
+                  {deleteMutation.isPending && deleteMutation.variables === doc._id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 size={18} />
+                  )}
                 </Button>
               </div>
             ))}
           </div>
-        ) : (
+        ) : !isLoading && !error && (
           <div className="text-center py-8">
-            <p className="text-gray-500">No documents found matching your search.</p>
+            <p className="text-gray-500">
+              {documents && documents.length === 0 ? 'No documents found.' : 'No documents found matching your search.'}
+            </p>
           </div>
         )}
       </div>
