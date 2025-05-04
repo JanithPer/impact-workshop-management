@@ -86,7 +86,7 @@ const data = {
         },
         {
           title: "AI Help",
-          url: "/underconstruction",
+          url: "/directory/ai-help",
         },
       ],
     },
