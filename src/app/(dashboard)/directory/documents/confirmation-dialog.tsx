@@ -48,7 +48,7 @@ export function ConfirmationDialog({
           >
             {cancelText}
           </Button>
-          <Button type="button" onClick={onConfirm} disabled={isLoading}>
+          <Button type="button" variant="destructive" onClick={onConfirm} disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : null}
