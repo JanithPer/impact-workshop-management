@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import PageHeader from '@/components/blocks/page-header';
 
 interface Message {
   id: string;
@@ -50,6 +51,8 @@ export default function AiHelpPage() {
   };
 
   return (
+    <>
+    <PageHeader firstLinkName="Directory" secondLinkName="AI Helper" />
     <div className="flex flex-col h-[calc(100vh-theme(space.16))] p-4">
       <Card className="flex flex-col flex-grow">
         <CardHeader>
@@ -108,6 +111,7 @@ export default function AiHelpPage() {
         </CardFooter>
       </Card>
     </div>
+    </>
   );
 }
 
