@@ -16,9 +16,10 @@ const initialToken = typeof window !== 'undefined' ? Cookies.get(process.env.NEX
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   isAuthenticated: !!initialToken,
-  isLoading: false,
+  isLoading: true, // Start with loading true
   login: (token, user) => {
-    Cookies.set(process.env.NEXT_PUBLIC_JWT_COOKIE_NAME!, token, { secure: true });
+    // Set cookie to expire in 7 days to persist across sessions
+    Cookies.set(process.env.NEXT_PUBLIC_JWT_COOKIE_NAME!, token, { secure: true, expires: 7 }); 
     set({ user, isAuthenticated: true, isLoading: false });
   },
   logout: () => {
@@ -26,7 +27,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ user: null, isAuthenticated: false, isLoading: false });
   },
   initialize: () => {
-    const token = Cookies.get(process.env.NEXT_PUBLIC_JWT_COOKIE_NAME!);
-    set({ isAuthenticated: !!token, isLoading: false });
+    set({ isLoading: true }); // Set loading true initially
+    const token = Cookies.get(process.env.NEXT_PUBLIC_JWT_COOKIE_NAME!); 
+    // TODO: Optionally fetch user details here if token exists
+    set({ isAuthenticated: !!token, isLoading: false }); // Set final state
   },
 }));
