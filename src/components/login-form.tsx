@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '@/schemas/auth';
 import { useLogin } from '@/hooks/use-auth';
+import { Eye, EyeOff } from 'lucide-react';
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,10 +24,11 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const { mutate: login, isPending } = useLogin();
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
@@ -33,6 +36,8 @@ export function LoginForm({
   const onSubmit = (data: LoginFormData) => {
     login(data);
   };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -73,13 +78,34 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  {...register('password')}
-                  className={errors.password ? 'border-red-500' : ''}
-                />
+                <div className="relative"> 
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'} 
+                    required
+                    {...register('password')}
+                    className={cn(
+                      errors.password ? 'border-red-500' : '',
+                      'pr-10' 
+                    )}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" // Position the button
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    <span className="sr-only">
+                      {showPassword ? "Hide password" : "Show password"}
+                    </span>
+                  </Button>
+                </div>
                 {errors.password && (
                   <span className="text-red-500 text-sm">
                     {errors.password.message}
