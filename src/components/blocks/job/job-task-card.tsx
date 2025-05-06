@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
-import { Trash } from "lucide-react";
+import { Trash, KanbanSquare } from "lucide-react"; // Added KanbanSquare import
 import { cn } from "@/lib/utils";
 import { Task } from "../../../app/(dashboard)/orders/job/data";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -62,7 +68,24 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
           )}
         </div>
         
-        <div>
+        <div className="flex gap-1"> {/* Wrapped buttons in a flex container */} 
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="size-7 cursor-pointer"
+                  onClick={() => console.log('Add to Kanban clicked for task:', task.id)} // Placeholder onClick
+                >
+                  <KanbanSquare className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add to kanban</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button 
             variant="ghost" 
             size="icon" 
