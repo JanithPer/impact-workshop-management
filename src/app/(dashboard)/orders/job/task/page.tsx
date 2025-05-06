@@ -4,7 +4,7 @@ import FileUpload from '@/components/blocks/file-upload'
 import PageHeader from '@/components/blocks/page-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Pencil, Save } from 'lucide-react'
+import { Pencil, Plus, Save } from 'lucide-react'
 import React, { useState } from 'react'
 import { initialComments, assignedPeople } from './data'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -96,6 +96,9 @@ const TaskPage = () => {
               />
             </Avatar>
           ))}
+          <Button variant="secondary" size="icon" className="rounded-full cursor-pointer">
+            <Plus />
+          </Button>
         </div>
       )} 
     
