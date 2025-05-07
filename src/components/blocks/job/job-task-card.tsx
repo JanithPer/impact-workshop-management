@@ -50,7 +50,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
               "text-lg font-semibold cursor-pointer hover:underline",
               isChecked && "line-through text-muted-foreground"
             )}>
-              {task.title}
+              {task.name}
             </h3>
           </div>
           
@@ -59,7 +59,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
               {task.assignedPeople.map(person => (
                 <Avatar key={person.id} className="h-8 w-8">
                   <AvatarImage 
-                    src={person.avatar} 
+                    src={person.avatar.url} 
                     alt={person.name}
                   />
                 </Avatar>

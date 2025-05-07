@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu"
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { api } from '@/lib/axios';
 import { RepairOrder, columns as getColumns } from "./columns"; // Import RepairOrder type and columns function
 import { EditRepairOrderDialog } from "./edit-repair-order-dialog"; // Import Edit dialog
@@ -52,21 +53,22 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({}) 
   const [rowSelection, setRowSelection] = React.useState({})
-  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
-  const [selectedRepairOrder, setSelectedRepairOrder] = React.useState<RepairOrder | null>(null);
+  // const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false); // Edit dialog is now on detail page
+  // const [selectedRepairOrder, setSelectedRepairOrder] = React.useState<RepairOrder | null>(null); // Edit dialog is now on detail page
 
   const { data: repairOrders = [], isLoading, error } = useQuery<RepairOrder[]>({ 
     queryKey: ['repair-orders'], 
     queryFn: fetchRepairOrders 
   });
 
-  const openEditDialog = (repairOrder: RepairOrder) => {
-    setSelectedRepairOrder(repairOrder);
-    setIsEditDialogOpen(true);
-  };
+  // const openEditDialog = (repairOrder: RepairOrder) => {
+  //   setSelectedRepairOrder(repairOrder);
+  //   setIsEditDialogOpen(true);
+  // }; // Edit dialog is now on detail page
 
   // Memoize columns to prevent unnecessary re-renders
-  const columns = React.useMemo(() => getColumns(openEditDialog), []);
+  // The openEditDialog function is removed as editing is handled on the detail page.
+  const columns = React.useMemo(() => getColumns(/* openEditDialog */), []);
 
   const table = useReactTable({
     data: repairOrders,
@@ -156,18 +158,23 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const router = useRouter(); // Hook used inside the map for each row
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => router.push(`/orders/repair-orders/${row.original._id}`)}
+                    className="cursor-pointer hover:bg-muted/50"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
@@ -200,14 +207,14 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
           Next
         </Button>
       </div>
-      {/* Render Edit Dialog */} 
-      {selectedRepairOrder && (
+      {/* EditRepairOrderDialog is now rendered on the detail page /[id]/page.tsx */}
+      {/* {selectedRepairOrder && (
         <EditRepairOrderDialog
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           repairOrder={selectedRepairOrder}
         />
-      )}
+      )} */}
     </div>
   )
 }
