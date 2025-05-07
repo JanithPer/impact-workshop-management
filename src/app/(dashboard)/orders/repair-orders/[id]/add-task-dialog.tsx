@@ -26,14 +26,14 @@ import { User } from '@/types/user'; // Assuming User type for assignedPeople
 const taskSchema = z.object({
   name: z.string().min(1, 'Task name is required').max(100),
   description: z.string().max(500).optional(),
-  status: z.enum(['todo', 'in-progress', 'done']).default('todo'),
-  colorMode: z.enum(['success', 'warning', 'danger', 'info']).default('success'),
+  status: z.enum(['todo', 'in-progress', 'done']),
+  colorMode: z.enum(['success', 'warning', 'danger', 'info']),
   start: z.string().refine((date) => !isNaN(Date.parse(date)), { message: "Start date is required" }),
   end: z.string().optional(),
   assignedPeople: z.array(z.string()).optional(), // Array of user IDs
-  // comments: z.array(z.string().max(1000)).optional(), // Comments might be handled differently
-  // pictures: z.any().optional(), // File uploads need special handling
-  onKanban: z.boolean().default(false),
+  // comments: z.array(z.string().max(1000)).optional(), 
+  // pictures: z.any().optional(), 
+  onKanban: z.boolean(),
 });
 
 type TaskFormData = z.infer<typeof taskSchema>;
@@ -42,12 +42,12 @@ interface AddTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   repairOrderId: string;
-  onTaskAdded: () => void; // Callback to refresh task list
+  onTaskAdded: () => void; 
 }
 
-// Mock function to fetch users - replace with your actual API call
+
 const fetchUsers = async (): Promise<User[]> => {
-  const response = await api.get('/users'); // Adjust endpoint as needed
+  const response = await api.get('/users'); 
   return response.data.data;
 };
 
@@ -101,7 +101,7 @@ export function AddTaskDialog({ open, onOpenChange, repairOrderId, onTaskAdded }
       // formData.append('comments', JSON.stringify(data.comments || []));
       formData.append('onKanban', String(data.onKanban));
       
-      // Handle file uploads if you add 'pictures' to the form
+      
       // if (data.pictures && data.pictures.length > 0) {
       //   for (let i = 0; i < data.pictures.length; i++) {
       //     formData.append('pictures', data.pictures[i]);
@@ -116,8 +116,8 @@ export function AddTaskDialog({ open, onOpenChange, repairOrderId, onTaskAdded }
     },
     onSuccess: () => {
       toast.success('Task added successfully!');
-      queryClient.invalidateQueries({ queryKey: ['tasks', repairOrderId] }); // Invalidate tasks for this specific repair order
-      queryClient.invalidateQueries({ queryKey: ['tasks'] }); // Or a more general task query key
+      queryClient.invalidateQueries({ queryKey: ['tasks', repairOrderId] }); 
+      queryClient.invalidateQueries({ queryKey: ['tasks'] }); 
       onTaskAdded(); // Call the callback
       onOpenChange(false); // Close dialog on success
       reset(); // Reset form

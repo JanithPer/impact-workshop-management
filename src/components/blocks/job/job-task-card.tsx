@@ -10,7 +10,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Trash, KanbanSquare } from "lucide-react"; // Added KanbanSquare import
 import { cn } from "@/lib/utils";
-import { Task } from "../../../app/(dashboard)/orders/job/data";
+import { Task } from "@/types/task"
 import { Checkbox } from "@/components/ui/checkbox";
 
 const colorModes = {
@@ -24,7 +24,7 @@ type ColorMode = keyof typeof colorModes
 
 interface JobTaskCardProps {
   task: Task;
-  deleteTask: (id: string) => void;
+  deleteTask: (_id: string) => void;
 }
 
 const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
@@ -54,7 +54,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
             </h3>
           </div>
           
-          {task.assignedPeople.length > 0 && (
+          {task.assignedPeople && task.assignedPeople.length > 0 && (
             <div className="flex items-center gap-0.5">
               {task.assignedPeople.map(person => (
                 <Avatar key={person.id} className="h-8 w-8">
@@ -76,7 +76,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
                   variant="ghost" 
                   size="icon" 
                   className="size-7 cursor-pointer"
-                  onClick={() => console.log('Add to Kanban clicked for task:', task.id)} // Placeholder onClick
+                  onClick={() => console.log('Add to Kanban clicked for task:', task._id)} // Placeholder onClick
                 >
                   <KanbanSquare className="w-4 h-4" />
                 </Button>
@@ -90,7 +90,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
             variant="ghost" 
             size="icon" 
             className="size-7"
-            onClick={() => deleteTask(task.id)}
+            onClick={() => deleteTask(task._id)}
           >
             <Trash className="w-4 h-4" />
           </Button>

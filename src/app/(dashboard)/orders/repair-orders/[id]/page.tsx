@@ -13,7 +13,7 @@ import { Task } from '@/types/task';
 import { EditRepairOrderDialog } from "../edit-repair-order-dialog";
 import { AddTaskDialog } from './add-task-dialog';
 
-// Mock data for initial setup, replace with API calls
+
 const initialTasks: Task[] = []; // Start with empty tasks
 
 const RepairOrderDetailPage = () => {
@@ -26,7 +26,7 @@ const RepairOrderDetailPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // TODO: States for dialogs
+    
     const [isEditRepairOrderDialogOpen, setIsEditRepairOrderDialogOpen] = useState(false);
     const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
 
@@ -35,14 +35,14 @@ const RepairOrderDetailPage = () => {
             const fetchRepairOrderDetails = async () => {
                 setIsLoading(true);
                 try {
-                    // Fetch Repair Order Details
+                    
                     const repairOrderRes = await api.get(`/repair-orders/${repairOrderId}`);
                     setRepairOrder(repairOrderRes.data.data);
 
-                    // Fetch Tasks for this Repair Order
-                    // Assuming backend supports filtering tasks by repairOrder ID
-                    // You might need to adjust the endpoint or query params
-                    const tasksRes = await api.get(`/tasks?repairOrder=${repairOrderId}`); 
+                    
+                    
+                    
+                    const tasksRes = await api.get(`/tasks/repair-order/${repairOrderId}`); 
                     setTasks(tasksRes.data.data || []);
                     setError(null);
                 } catch (err: any) {
@@ -81,7 +81,10 @@ const RepairOrderDetailPage = () => {
 
     return (
         <div>
-            <PageHeader firstLinkName="Orders" secondLinkName={`Repair Order: ${repairOrder.registrationNumber || repairOrderId}`} href={`/orders/repair-orders/${repairOrderId}`} />
+            <PageHeader 
+                firstLinkName="Orders" 
+                secondLinkName={`Repair Order: ${repairOrder.registrationNumber || repairOrderId}`} 
+            />
             <div className="px-4 flex justify-between items-center">
                 <h2 className="text-2xl">{repairOrder.customer?.name || 'Customer Name N/A'} - {repairOrder.registrationNumber}</h2>
                 <div className="flex gap-2">
@@ -89,7 +92,7 @@ const RepairOrderDetailPage = () => {
                         variant="outline" 
                         size="icon" 
                         className="rounded-full cursor-pointer"
-                        onClick={() => setIsEditRepairOrderDialogOpen(true)} // TODO: Implement Edit Dialog
+                        onClick={() => setIsEditRepairOrderDialogOpen(true)} 
                     >
                         <Pencil />
                     </Button>
@@ -97,7 +100,7 @@ const RepairOrderDetailPage = () => {
                         variant="outline" 
                         size="icon" 
                         className="rounded-full cursor-pointer"
-                        onClick={() => setIsAddTaskDialogOpen(true)} // TODO: Implement Add Task Dialog
+                        onClick={() => setIsAddTaskDialogOpen(true)} 
                     >
                         <Plus />
                     </Button>
@@ -135,7 +138,7 @@ const RepairOrderDetailPage = () => {
                                 key={task._id} 
                                 task={task} 
                                 deleteTask={() => deleteTask(task._id!)} // Ensure task._id is used
-                                // TODO: Add props for editing task if needed
+                                
                             />
                         ))}
                     </div>
@@ -157,8 +160,8 @@ const RepairOrderDetailPage = () => {
                     onOpenChange={setIsAddTaskDialogOpen}
                     repairOrderId={repairOrder._id!}
                     onTaskAdded={() => {
-                        // Refetch tasks or update state optimistically
-                        api.get(`/tasks?repairOrder=${repairOrderId}`).then(res => setTasks(res.data.data || [])).catch(err => toast.error("Failed to refresh tasks."));
+                        
+                        api.get(`/tasks/repair-order/${repairOrderId}`).then(res => setTasks(res.data.data || [])).catch(err => toast.error("Failed to refresh tasks."));
                     }}
                 />
             )}
