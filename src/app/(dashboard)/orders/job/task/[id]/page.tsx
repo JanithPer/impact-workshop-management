@@ -1,24 +1,24 @@
 "use client"
 
-// import FileUpload from '@/components/blocks/file-upload' // Using standard input for now
+
 import PageHeader from '@/components/blocks/page-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Pencil, Plus, Save, Trash2 } from 'lucide-react' // Added Trash2 for deleting comments
+import { Pencil, Plus, Save, Trash2 } from 'lucide-react' 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { DateTimePicker } from '@/components/blocks/date-time-picker'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useParams, useRouter } from 'next/navigation' // For getting route params
-import { api } from '@/lib/axios' // For API calls
-import { Task, Person, Picture, Comment as TaskComment } from '@/types/task' // Adjusted Task types
-import { toast } from 'sonner'; // For notifications
-import { Textarea } from '@/components/ui/textarea'; // For description
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog'; // For edit modal
+import { useParams, useRouter } from 'next/navigation' 
+import { api } from '@/lib/axios' 
+import { Task, Person, Picture, Comment as TaskComment } from '@/types/task' 
+import { toast } from 'sonner'; 
+import { Textarea } from '@/components/ui/textarea'; 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog'; 
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-// Comment type from task.ts will be used or comments will be string[] as per backend model
+
 
 const TaskDetailsPage = () => {
   const params = useParams();
@@ -29,7 +29,7 @@ const TaskDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [newCommentText, setNewCommentText] = useState(''); // Renamed from newComment for clarity
+  const [newCommentText, setNewCommentText] = useState(''); 
   const [stagedNewComments, setStagedNewComments] = useState<string[]>([]);
   const [commentsToRemoveIndices, setCommentsToRemoveIndices] = useState<number[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -43,13 +43,13 @@ const TaskDetailsPage = () => {
     setIsLoading(true);
     try {
       const response = await api.get(`/tasks/${taskId}`);
-      // Ensure comments are string[] if backend sends them as such, or adapt if TaskComment is object
+      
       const fetchedTaskData = response.data.data;
-      // If backend comments are string[] and TaskComment is {text: string, _id?: string}
-      // fetchedTaskData.comments = fetchedTaskData.comments.map((comment: string | TaskComment) => 
-      //   typeof comment === 'string' ? { text: comment } : comment
-      // );
-      // For now, assuming Task type in frontend matches backend (comments: string[])
+      
+       
+      
+      
+      
       setTask(fetchedTaskData);
       setEditableName(fetchedTaskData.name);
       setEditableDescription(fetchedTaskData.description || '');
@@ -70,10 +70,10 @@ const TaskDetailsPage = () => {
     if (!task) return;
     
     const formData = new FormData();
-    // These are handled by separate modal/button
-    // formData.append('name', task.name);
-    // formData.append('description', task.description);
-    // formData.append('status', task.status); 
+    
+    
+    
+     
 
     formData.append('colorMode', task.colorMode);
     if (task.assignedPeople) {
@@ -93,25 +93,26 @@ const TaskDetailsPage = () => {
     // Add staged new comments
     finalComments = [...finalComments, ...stagedNewComments];
 
-    if (finalComments.length > 0 || (task.comments && task.comments.length > 0)) { // Send if there are comments or were comments
+    if (finalComments.length > 0 || (task.comments && task.comments.length > 0)) { 
       formData.append('comments', JSON.stringify(finalComments)); 
     }
 
     if (task.start) {
       formData.append('start', new Date(task.start).toISOString());
     }
-    if (task.end) {
-      formData.append('end', new Date(task.end).toISOString());
-    } else {
-      formData.append('end', ''); // Explicitly send empty if cleared
-    }
+    
+    
+    
+    
+    
+    // }
 
-    // Handle new picture uploads
+    
     stagedFiles.forEach(file => {
       formData.append('pictures', file);
     });
 
-    // Handle pictures to remove
+    
     if (picturesToRemove.length > 0) {
       formData.append('picturesToRemove', JSON.stringify(picturesToRemove));
     }
@@ -124,12 +125,12 @@ const TaskDetailsPage = () => {
         },
       });
       setTask(response.data.data);
-      setStagedFiles([]); // Clear staged files after successful upload
-      setPicturesToRemove([]); // Clear removed pictures list
-      setStagedNewComments([]); // Clear staged comments
-      setCommentsToRemoveIndices([]); // Clear comments marked for removal
+      setStagedFiles([]); 
+      setPicturesToRemove([]); 
+      setStagedNewComments([]); 
+      setCommentsToRemoveIndices([]); 
       toast.success('Task updated successfully!');
-      fetchTask(); // Re-fetch to ensure UI is in sync with backend state, including new picture URLs
+      fetchTask(); 
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to update task');
       console.error("Update task error:", err);
@@ -143,7 +144,7 @@ const TaskDetailsPage = () => {
     const newStatus = task.status === 'done' ? 'in-progress' : 'done';
     try {
       setIsLoading(true);
-      // Optimistically update UI for status toggle, but comments/pictures rely on save button
+      
       const response = await api.patch(`/tasks/${taskId}`, { status: newStatus });
       setTask(prev => prev ? { ...prev, status: newStatus } : null);
       toast.success(`Task marked as ${newStatus}`);
@@ -154,7 +155,7 @@ const TaskDetailsPage = () => {
     }
   };
 
-  const handleAddComment = () => { // No longer async, just stages the comment
+  const handleAddComment = () => { 
     if (newCommentText.trim() === '') return;
     const commentToAdd = newCommentText.trim();
     setStagedNewComments(prev => [...prev, commentToAdd]);
@@ -165,7 +166,7 @@ const TaskDetailsPage = () => {
   const handleRemoveExistingComment = (commentIndex: number) => {
     if (!task || !task.comments || commentIndex < 0 || commentIndex >= task.comments.length) return;
     
-    // If already marked for removal, unmark it (optional, good UX)
+    
     if (commentsToRemoveIndices.includes(commentIndex)) {
       setCommentsToRemoveIndices(prev => prev.filter(idx => idx !== commentIndex));
       toast.info('Comment un-marked for removal.');
@@ -202,7 +203,7 @@ const TaskDetailsPage = () => {
   if (error) return <div className="p-4 text-red-500">Error: {error} <Button onClick={fetchTask}>Try Again</Button></div>;
   if (!task) return <div className="p-4">Task not found.</div>;
 
-  // Filtered comments for display (existing ones not marked for removal)
+  
   const existingCommentsForDisplay = task.comments
     ? task.comments.filter((_, index) => !commentsToRemoveIndices.includes(index))
     : [];
@@ -265,19 +266,12 @@ const TaskDetailsPage = () => {
 
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label>Start Date</Label>
           <DateTimePicker 
             date={task.start ? new Date(task.start) : undefined} 
             setDate={(date) => setTask(prev => prev ? { ...prev, start: date } : null)} 
           />
         </div>
-        <div>
-          <Label>End Date (Optional)</Label>
-          <DateTimePicker 
-            date={task.end ? new Date(task.end) : undefined} 
-            setDate={(date) => setTask(prev => prev ? { ...prev, end: date } : null)} 
-          />
-        </div>
+        {/* Removed End Date Picker Div */}
       </div>
 
       {/* Assigned People - Placeholder for more complex selection UI */}
@@ -328,7 +322,7 @@ const TaskDetailsPage = () => {
                 // For simplicity, we'll try to find the first occurrence if not already marked for removal
                 const firstOccurrenceIndex = task.comments?.indexOf(comment);
                 if (firstOccurrenceIndex !== undefined && firstOccurrenceIndex !== -1 && !commentsToRemoveIndices.includes(firstOccurrenceIndex)) {
-                    // This is a bit of a hack, ideally comments would have unique IDs
+                    
                 } else {
                     return null; // Skip rendering if we can't reliably get an index
                 }
