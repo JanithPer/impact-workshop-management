@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 import { Trash, KanbanSquare } from "lucide-react"; // Added KanbanSquare import
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Task } from "@/types/task"
 import { Checkbox } from "@/components/ui/checkbox";
@@ -46,12 +47,14 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
               checked={isChecked}
               onCheckedChange={(checked) => setIsChecked(!!checked)}
             />
-            <h3 className={cn(
-              "text-lg font-semibold cursor-pointer hover:underline",
-              isChecked && "line-through text-muted-foreground"
-            )}>
-              {task.name}
-            </h3>
+            <Link href={`/orders/job/task/${task._id}`} passHref>
+              <h3 className={cn(
+                "text-lg font-semibold cursor-pointer hover:underline",
+                isChecked && "line-through text-muted-foreground"
+              )}>
+                {task.name}
+              </h3>
+            </Link>
           </div>
           
           {task.assignedPeople && task.assignedPeople.length > 0 && (
