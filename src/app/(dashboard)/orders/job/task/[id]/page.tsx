@@ -29,7 +29,9 @@ const TaskDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [newComment, setNewComment] = useState('');
+  const [newCommentText, setNewCommentText] = useState(''); // Renamed from newComment for clarity
+  const [stagedNewComments, setStagedNewComments] = useState<string[]>([]);
+  const [commentsToRemoveIndices, setCommentsToRemoveIndices] = useState<number[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editableName, setEditableName] = useState('');
   const [editableDescription, setEditableDescription] = useState('');
@@ -77,10 +79,24 @@ const TaskDetailsPage = () => {
     if (task.assignedPeople) {
       formData.append('assignedPeople', JSON.stringify(task.assignedPeople.map(p => p._id)));
     }
-    // Assuming task.comments is string[] as per backend model
-    if (task.comments) {
-      formData.append('comments', JSON.stringify(task.comments)); 
+
+    // Construct final comments array
+    let finalComments = task.comments ? [...task.comments] : [];
+    // Apply removals from existing comments
+    // Sort indices in descending order to avoid shifting issues when splicing
+    const sortedIndicesToRemove = [...commentsToRemoveIndices].sort((a, b) => b - a);
+    sortedIndicesToRemove.forEach(index => {
+      if (finalComments && index < finalComments.length) {
+        finalComments.splice(index, 1);
+      }
+    });
+    // Add staged new comments
+    finalComments = [...finalComments, ...stagedNewComments];
+
+    if (finalComments.length > 0 || (task.comments && task.comments.length > 0)) { // Send if there are comments or were comments
+      formData.append('comments', JSON.stringify(finalComments)); 
     }
+
     if (task.start) {
       formData.append('start', new Date(task.start).toISOString());
     }
@@ -110,6 +126,8 @@ const TaskDetailsPage = () => {
       setTask(response.data.data);
       setStagedFiles([]); // Clear staged files after successful upload
       setPicturesToRemove([]); // Clear removed pictures list
+      setStagedNewComments([]); // Clear staged comments
+      setCommentsToRemoveIndices([]); // Clear comments marked for removal
       toast.success('Task updated successfully!');
       fetchTask(); // Re-fetch to ensure UI is in sync with backend state, including new picture URLs
     } catch (err: any) {
@@ -125,6 +143,7 @@ const TaskDetailsPage = () => {
     const newStatus = task.status === 'done' ? 'in-progress' : 'done';
     try {
       setIsLoading(true);
+      // Optimistically update UI for status toggle, but comments/pictures rely on save button
       const response = await api.patch(`/tasks/${taskId}`, { status: newStatus });
       setTask(prev => prev ? { ...prev, status: newStatus } : null);
       toast.success(`Task marked as ${newStatus}`);
@@ -135,45 +154,30 @@ const TaskDetailsPage = () => {
     }
   };
 
-  const handleAddComment = async () => {
-    if (!task || newComment.trim() === '') return;
-    const newCommentText = newComment.trim();
-    // Assuming task.comments is string[]
-    const currentComments = task.comments || [];
-    const updatedComments = [...currentComments, newCommentText];
-    
-    const originalTask = { ...task }; // For revert
-    // Optimistic update
-    setTask(prev => prev ? { ...prev, comments: updatedComments } : null);
-    setNewComment('');
+  const handleAddComment = () => { // No longer async, just stages the comment
+    if (newCommentText.trim() === '') return;
+    const commentToAdd = newCommentText.trim();
+    setStagedNewComments(prev => [...prev, commentToAdd]);
+    setNewCommentText('');
+    toast.info('Comment staged. Save changes to persist.');
+  };
 
-    try {
-      const response = await api.patch(`/tasks/${taskId}`, { comments: updatedComments });
-      setTask(response.data.data); // Update with backend response (might include new comment _id if applicable)
-      toast.success('Comment added');
-    } catch (err:any) {
-      toast.error(err.response?.data?.message || 'Failed to add comment');
-      setTask(originalTask); // Revert optimistic update
+  const handleRemoveExistingComment = (commentIndex: number) => {
+    if (!task || !task.comments || commentIndex < 0 || commentIndex >= task.comments.length) return;
+    
+    // If already marked for removal, unmark it (optional, good UX)
+    if (commentsToRemoveIndices.includes(commentIndex)) {
+      setCommentsToRemoveIndices(prev => prev.filter(idx => idx !== commentIndex));
+      toast.info('Comment un-marked for removal.');
+    } else {
+      setCommentsToRemoveIndices(prev => [...prev, commentIndex]);
+      toast.info('Comment marked for removal. Save changes to persist.');
     }
   };
 
-  const handleRemoveComment = async (commentIndex: number) => {
-    if (!task || !task.comments) return;
-    const originalTask = { ...task }; // For revert
-    const updatedComments = [...task.comments];
-    updatedComments.splice(commentIndex, 1);
-
-    // Optimistic update
-    setTask(prev => prev ? { ...prev, comments: updatedComments } : null);
-
-    try {
-      const response = await api.patch(`/tasks/${taskId}`, { comments: updatedComments });
-      setTask(response.data.data);
-      toast.success('Comment removed');
-    } catch (err:any) {
-      toast.error(err.response?.data?.message || 'Failed to remove comment');
-      setTask(originalTask); // Revert
-    }
+  const handleRemoveStagedComment = (stagedCommentIndex: number) => {
+    setStagedNewComments(prev => prev.filter((_, index) => index !== stagedCommentIndex));
+    toast.info('Staged comment removed.');
   };
   
   const handleUpdateNameDescription = async () => {
@@ -197,6 +201,11 @@ const TaskDetailsPage = () => {
   if (isLoading && !task) return <div className="p-4">Loading task details...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error} <Button onClick={fetchTask}>Try Again</Button></div>;
   if (!task) return <div className="p-4">Task not found.</div>;
+
+  // Filtered comments for display (existing ones not marked for removal)
+  const existingCommentsForDisplay = task.comments
+    ? task.comments.filter((_, index) => !commentsToRemoveIndices.includes(index))
+    : [];
 
   return (
     <div className='pb-4'>
@@ -297,28 +306,57 @@ const TaskDetailsPage = () => {
         <Label className="block mb-2">Comments</Label>
         <div className="flex gap-2 pb-2">
           <Input
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            value={newCommentText}
+            onChange={(e) => setNewCommentText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
             placeholder="Add a comment..."
             className="flex-1"
             disabled={isLoading}
           />
-          <Button onClick={handleAddComment} disabled={isLoading || newComment.trim() === ''}>
+          <Button onClick={handleAddComment} disabled={isLoading || newCommentText.trim() === ''}>
             Add
           </Button>
         </div>
         <div className="space-y-2 mt-2">
-          {/* Assuming task.comments is string[] */}
-          {task.comments && task.comments.map((comment, index) => (
-            <div key={index} className="flex justify-between items-center p-2 border rounded-md">
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment}</p>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveComment(index)} disabled={isLoading}>
+          {/* Display existing comments (not marked for removal) */}
+          {existingCommentsForDisplay.map((comment, originalIndex) => {
+            // We need the original index from task.comments to correctly mark for removal
+            const actualIndexInTaskComments = task.comments?.findIndex(c => c === comment && !commentsToRemoveIndices.includes(task.comments!.indexOf(c))) ?? -1;
+            if (actualIndexInTaskComments === -1 && !task.comments?.includes(comment)) { // Should not happen if logic is correct
+                // Fallback or skip rendering if we can't find the original index reliably for some reason
+                // This case implies the comment might have been removed and re-added, or complex state issue
+                // For simplicity, we'll try to find the first occurrence if not already marked for removal
+                const firstOccurrenceIndex = task.comments?.indexOf(comment);
+                if (firstOccurrenceIndex !== undefined && firstOccurrenceIndex !== -1 && !commentsToRemoveIndices.includes(firstOccurrenceIndex)) {
+                    // This is a bit of a hack, ideally comments would have unique IDs
+                } else {
+                    return null; // Skip rendering if we can't reliably get an index
+                }
+            }
+            const originalCommentIndex = task.comments ? task.comments.indexOf(comment, commentsToRemoveIndices.includes(task.comments.indexOf(comment)) ? task.comments.indexOf(comment) + 1 : 0) : -1;
+
+            return (
+              <div key={`existing-${originalCommentIndex}`} className={`flex justify-between items-center p-2 border rounded-md ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'opacity-50 line-through' : ''}`}>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment}</p>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveExistingComment(originalCommentIndex)} disabled={isLoading}>
+                  <Trash2 className={`h-4 w-4 ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'text-yellow-500' : 'text-red-500'}`} />
+                </Button>
+              </div>
+            );
+          })}
+
+          {/* Display staged new comments */}
+          {stagedNewComments.map((comment, index) => (
+            <div key={`staged-${index}`} className="flex justify-between items-center p-2 border border-dashed border-blue-500 rounded-md bg-blue-50">
+              <p className="text-sm text-blue-700 whitespace-pre-wrap">{comment} (new)</p>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveStagedComment(index)} disabled={isLoading}>
                 <Trash2 className="h-4 w-4 text-red-500" />
               </Button>
             </div>
           ))}
-          {(!task.comments || task.comments.length === 0) && <p className="text-sm text-muted-foreground">No comments yet.</p>}
+
+          {existingCommentsForDisplay.length === 0 && stagedNewComments.length === 0 && 
+            <p className="text-sm text-muted-foreground">No comments yet. Add one above or save changes if some are pending.</p>}
         </div>
       </div>
 
