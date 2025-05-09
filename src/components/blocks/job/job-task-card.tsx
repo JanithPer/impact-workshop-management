@@ -47,7 +47,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
               checked={isChecked}
               onCheckedChange={(checked) => setIsChecked(!!checked)}
             />
-            <Link href={`/orders/repair-orders/task/${task._id}`} passHref>
+            <Link href={`/orders/job/task/${task._id}`} passHref>
               <h3 className={cn(
                 "text-lg font-semibold cursor-pointer hover:underline",
                 isChecked && "line-through text-muted-foreground"
