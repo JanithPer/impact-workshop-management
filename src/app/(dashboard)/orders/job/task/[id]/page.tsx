@@ -81,7 +81,7 @@ const TaskDetailsPage = () => {
     }
 
     // Construct final comments array
-    let finalComments = task.comments ? [...task.comments] : [];
+    let finalComments: TaskComment[] = task.comments ? [...task.comments] : [];
     // Apply removals from existing comments
     // Sort indices in descending order to avoid shifting issues when splicing
     const sortedIndicesToRemove = [...commentsToRemoveIndices].sort((a, b) => b - a);
@@ -267,8 +267,8 @@ const TaskDetailsPage = () => {
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <DateTimePicker 
-            date={task.start ? new Date(task.start) : undefined} 
-            setDate={(date) => setTask(prev => prev ? { ...prev, start: date } : null)} 
+            value={task.start ? new Date(task.start) : undefined} 
+            onChange={(date) => setTask(prev => prev ? { ...prev, start: date } : null)} 
           />
         </div>
         {/* Removed End Date Picker Div */}
