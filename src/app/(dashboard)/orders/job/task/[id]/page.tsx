@@ -17,6 +17,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog'; 
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox'; 
+import { ScrollArea } from '@/components/ui/scroll-area'; 
+import { XIcon } from 'lucide-react'; // For remove icon
 
 
 
@@ -37,6 +40,11 @@ const TaskDetailsPage = () => {
   const [editableDescription, setEditableDescription] = useState('');
   const [stagedFiles, setStagedFiles] = useState<File[]>([]);
   const [picturesToRemove, setPicturesToRemove] = useState<string[]>([]);
+
+  // Updated state for user management
+  const [allUsers, setAllUsers] = useState<Person[]>([]); // Use Person type
+  const [isAssignUserModalOpen, setIsAssignUserModalOpen] = useState(false);
+  const [selectedUserIdsInModal, setSelectedUserIdsInModal] = useState<string[]>([]); 
 
   const fetchTask = useCallback(async () => {
     if (!taskId) return;
@@ -66,16 +74,35 @@ const TaskDetailsPage = () => {
     fetchTask();
   }, [fetchTask]);
 
+  // Fetch all users
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        // Corrected API endpoint
+        const response = await api.get('/users'); // Corrected path
+        setAllUsers(response.data.data || []);
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || 'Failed to fetch users');
+        console.error("Fetch all users error:", err);
+      }
+    };
+    fetchAllUsers();
+  }, []);
+
+  // Comments to display, filtering out those marked for removal
+  const existingCommentsForDisplay = task?.comments?.filter((_comment, index) => !commentsToRemoveIndices.includes(index)) || [];
+
   const handleSaveChanges = async () => {
     if (!task) return;
     
     const formData = new FormData();
     
-    
-    
-     
+    formData.append('name', editableName); 
+    formData.append('description', editableDescription);
 
     formData.append('colorMode', task.colorMode);
+    // Ensure assignedPeople contains the latest state including new assignments/removals
+    // task.assignedPeople should be updated by handleConfirmAssignUsers and handleRemoveAssignedPerson directly
     if (task.assignedPeople) {
       formData.append('assignedPeople', JSON.stringify(task.assignedPeople.map(p => p._id)));
     }
@@ -185,13 +212,17 @@ const TaskDetailsPage = () => {
     if (!task) return;
     try {
       setIsLoading(true);
-      const response = await api.patch(`/tasks/${taskId}`, { 
-        name: editableName, 
-        description: editableDescription 
-      });
+      // No need to call API here if name/description are part of the main save
+      // This function can be removed if covered by handleSaveChanges
+      // For now, let's assume it's for a separate quick edit feature if desired.
+      // If name/description are always saved with handleSaveChanges, this specific update can be removed.
+      // To keep it simple and ensure name/description are saved with other changes:
+      // We rely on handleSaveChanges to send editableName and editableDescription.
+      // This function might only update local state if not saving immediately.
+      // For now, let's assume it updates the main task object locally for consistency before save.
       setTask(prev => prev ? { ...prev, name: editableName, description: editableDescription } : null);
       setIsEditModalOpen(false);
-      toast.success('Task details updated!');
+      toast.success('Task details staged for saving!'); // Changed from direct update to staging
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to update task details');
     } finally {
@@ -199,19 +230,66 @@ const TaskDetailsPage = () => {
     }
   };
 
+  // User assignment handlers
+  const handleOpenAssignUserModal = () => {
+    if (!task || !task.assignedPeople) {
+        setSelectedUserIdsInModal([]);
+    } else {
+        setSelectedUserIdsInModal(task.assignedPeople.map(p => p._id));
+    }
+    setIsAssignUserModalOpen(true);
+  };
+
+  const handleCloseAssignUserModal = () => {
+    setIsAssignUserModalOpen(false);
+  };
+
+  const handleToggleUserSelectionInModal = (userId: string) => {
+    setSelectedUserIdsInModal(prevSelectedIds =>
+      prevSelectedIds.includes(userId)
+        ? prevSelectedIds.filter(id => id !== userId)
+        : [...prevSelectedIds, userId]
+    );
+  };
+
+  const handleConfirmAssignUsers = () => {
+    if (!task) return;
+    const newAssignedPeople = allUsers.filter(user => selectedUserIdsInModal.includes(user._id));
+    setTask(prevTask => prevTask ? { ...prevTask, assignedPeople: newAssignedPeople } : null);
+    toast.info('Assigned users updated. Save changes to persist.');
+    handleCloseAssignUserModal();
+  };
+
+  const handleRemoveAssignedPerson = (personId: string) => {
+    if (!task || !task.assignedPeople) return;
+    const updatedAssignedPeople = task.assignedPeople.filter(p => p._id !== personId);
+    setTask(prevTask => prevTask ? { ...prevTask, assignedPeople: updatedAssignedPeople } : null);
+    toast.info('User unassigned. Save changes to persist.');
+  };
+
+
   if (isLoading && !task) return <div className="p-4">Loading task details...</div>;
-  if (error) return <div className="p-4 text-red-500">Error: {error} <Button onClick={fetchTask}>Try Again</Button></div>;
+  if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
   if (!task) return <div className="p-4">Task not found.</div>;
 
+  const currentComments = task.comments ? [...task.comments] : [];
+  const displayComments = currentComments
+    .map((comment, index) => ({ text: comment, originalIndex: index, type: 'existing' as 'existing' | 'staged' }))
+    .filter(comment => !commentsToRemoveIndices.includes(comment.originalIndex));
   
-  const existingCommentsForDisplay = task.comments
-    ? task.comments.filter((_, index) => !commentsToRemoveIndices.includes(index))
-    : [];
+  const allDisplayComments = [
+    ...displayComments,
+    ...stagedNewComments.map(comment => ({ text: comment, type: 'staged' as 'existing' | 'staged' }))
+  ];
 
   return (
-    <div className='pb-4'>
-      <PageHeader firstLinkName="Repair Orders" secondLinkName={`Task: ${task.name}`} />
-      
+    <div className='pb-20'> {/* Increased pb for better scroll with more content */}
+      <PageHeader 
+        firstLinkName={task.jobId ? "Job" : "Repair Order"} 
+        firstLinkHref={task.jobId ? `/orders/job/${task.jobId}` : `/orders/repair-orders/${task.repairOrderId}`}
+        secondLinkName="Task Details" 
+      />
+
       <div className="px-4 py-2 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <h2 className={cn(
@@ -254,7 +332,6 @@ const TaskDetailsPage = () => {
           </Button>
         </div>
       </div>
-
       <div className="p-4">
         <p className={cn(
           "text-base text-muted-foreground",
@@ -263,7 +340,6 @@ const TaskDetailsPage = () => {
           {task.description || 'No description provided.'}
         </p>
       </div>
-
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <DateTimePicker 
@@ -271,28 +347,46 @@ const TaskDetailsPage = () => {
             onChange={(date) => setTask(prev => prev ? { ...prev, start: date } : null)} 
           />
         </div>
-        {/* Removed End Date Picker Div */}
       </div>
 
-      {/* Assigned People - Placeholder for more complex selection UI */}
       <div className="p-4">
-        <Label className="block mb-2">Assigned People</Label>
+        <h3 className="text-lg font-semibold mb-2">Assigned People</h3>
         {task.assignedPeople && task.assignedPeople.length > 0 ? (
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             {task.assignedPeople.map((person: Person) => (
-              <Avatar key={person._id} className="h-10 w-10">
-                <AvatarImage 
-                  src={person.avatar?.url || '/default-avatar.png'} // Fallback avatar
-                  alt={person.name}
-                />
-              </Avatar>
+              <div key={person._id} className="relative group">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage 
+                    src={person.avatar?.url || '/default-avatar.png'} 
+                    alt={person.name}
+                  />
+                </Avatar>
+                <Button 
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => handleRemoveAssignedPerson(person._id)}
+                  disabled={isLoading}
+                >
+                  <XIcon className="h-3 w-3" />
+                </Button>
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full text-xs bg-black text-white px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {person.name}
+                </span>
+              </div>
             ))}
-            <Button variant="secondary" size="icon" className="rounded-full cursor-pointer">
+            <Button variant="secondary" size="icon" className="rounded-full cursor-pointer h-10 w-10" onClick={handleOpenAssignUserModal} disabled={isLoading}>
               <Plus /> 
             </Button>
-            {/* TODO: Implement add/remove people functionality */}
           </div>
-        ) : <p className="text-sm text-muted-foreground">No one assigned yet.</p>}
+        ) : (
+          <div className="flex items-center gap-2">
+            <p className="text-muted-foreground">No one assigned yet.</p>
+            <Button variant="secondary" size="icon" className="rounded-full cursor-pointer h-10 w-10" onClick={handleOpenAssignUserModal} disabled={isLoading}>
+              <Plus /> 
+            </Button>
+          </div>
+        )}
       </div> 
     
       {/* Comments Section */}
@@ -341,16 +435,13 @@ const TaskDetailsPage = () => {
 
           {/* Display staged new comments */}
           {stagedNewComments.map((comment, index) => (
-            <div key={`staged-${index}`} className="flex justify-between items-center p-2 border border-dashed border-blue-500 rounded-md bg-blue-50">
-              <p className="text-sm text-blue-700 whitespace-pre-wrap">{comment} (new)</p>
+            <div key={`staged-${index}`} className="flex justify-between items-center">
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment}</p>
               <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveStagedComment(index)} disabled={isLoading}>
                 <Trash2 className="h-4 w-4 text-red-500" />
               </Button>
             </div>
           ))}
-
-          {existingCommentsForDisplay.length === 0 && stagedNewComments.length === 0 && 
-            <p className="text-sm text-muted-foreground">No comments yet. Add one above or save changes if some are pending.</p>}
         </div>
       </div>
 
@@ -471,15 +562,50 @@ const TaskDetailsPage = () => {
             <DialogClose asChild>
               <Button type="button" variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="button" onClick={handleUpdateNameDescription} disabled={isLoading}>
-              Save Changes
-            </Button>
+            {/* This button now just updates local state, main save is via Save icon */}
+            <Button type="button" onClick={handleUpdateNameDescription}>Update</Button> 
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign User Modal */}
+      <Dialog open={isAssignUserModalOpen} onOpenChange={setIsAssignUserModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Assign Users</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="grid gap-4 py-4">
+              {allUsers.length > 0 ? allUsers.map(user => (
+                <div key={user._id} className="flex items-center space-x-3">
+                  <Checkbox 
+                    id={`user-${user._id}`}
+                    checked={selectedUserIdsInModal.includes(user._id)}
+                    onCheckedChange={() => handleToggleUserSelectionInModal(user._id)}
+                  />
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.avatar?.url || undefined} alt={user.name} />
+                    {/* Fallback can be added here */}
+                  </Avatar>
+                  <Label htmlFor={`user-${user._id}`} className="flex flex-col">
+                    <span>{user.name}</span>
+                    {user.email && <span className="text-xs text-muted-foreground">{user.email}</span>}
+                  </Label>
+                </div>
+              )) : <p>No users available or failed to load users.</p>}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="button" onClick={handleConfirmAssignUsers}>Assign</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
     </div>
-  )
-}
+  );
+};
 
 export default TaskDetailsPage;

@@ -2,6 +2,7 @@ export interface Person {
   _id: string;
   name: string;
   avatar: { url: string };
+  email?: string; // Added optional email field
 }
 
 export interface Picture {
