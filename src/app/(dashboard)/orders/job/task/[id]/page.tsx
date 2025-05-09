@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Pencil, Plus, Save, Trash2 } from 'lucide-react' 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { DateTimePicker } from '@/components/blocks/date-time-picker'
+import { DateTimePicker } from '@/components/blocks/date-time-picker';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useParams, useRouter } from 'next/navigation' 
 import { api } from '@/lib/axios' 
@@ -38,6 +38,8 @@ const TaskDetailsPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editableName, setEditableName] = useState('');
   const [editableDescription, setEditableDescription] = useState('');
+  const [editableStartDate, setEditableStartDate] = useState<Date | undefined>(undefined);
+  const [editableEndDate, setEditableEndDate] = useState<Date | undefined>(undefined);
   const [stagedFiles, setStagedFiles] = useState<File[]>([]);
   const [picturesToRemove, setPicturesToRemove] = useState<string[]>([]);
 
@@ -61,6 +63,8 @@ const TaskDetailsPage = () => {
       setTask(fetchedTaskData);
       setEditableName(fetchedTaskData.name);
       setEditableDescription(fetchedTaskData.description || '');
+      setEditableStartDate(fetchedTaskData.start ? new Date(fetchedTaskData.start) : undefined);
+      setEditableEndDate(fetchedTaskData.end ? new Date(fetchedTaskData.end) : undefined);
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch task details');
@@ -100,6 +104,24 @@ const TaskDetailsPage = () => {
     formData.append('name', editableName); 
     formData.append('description', editableDescription);
 
+    // Date validation
+    if (editableStartDate && editableEndDate && editableEndDate < editableStartDate) {
+      toast.error("End date cannot be before start date.");
+      return;
+    }
+
+    if (editableStartDate) {
+      formData.append('start', editableStartDate.toISOString());
+    }
+    // Send end date only if it's defined. If it's undefined, the backend should handle it as not set or cleared.
+    if (editableEndDate) {
+      formData.append('end', editableEndDate.toISOString());
+    } else {
+      // If you need to explicitly clear the end date on the backend by sending an empty string or null:
+      // formData.append('end', ''); // Or handle as per backend expectation for clearing a date
+      // For now, we assume not sending 'end' means it's not set or should remain as is / be cleared by backend logic if previously set.
+    }
+
     formData.append('colorMode', task.colorMode);
     // Ensure assignedPeople contains the latest state including new assignments/removals
     // task.assignedPeople should be updated by handleConfirmAssignUsers and handleRemoveAssignedPerson directly
@@ -124,15 +146,7 @@ const TaskDetailsPage = () => {
       formData.append('comments', JSON.stringify(finalComments)); 
     }
 
-    if (task.start) {
-      formData.append('start', new Date(task.start).toISOString());
-    }
-    
-    
-    
-    
-    
-    // }
+
 
     
     stagedFiles.forEach(file => {
@@ -157,7 +171,7 @@ const TaskDetailsPage = () => {
       setStagedNewComments([]); 
       setCommentsToRemoveIndices([]); 
       toast.success('Task updated successfully!');
-      fetchTask(); 
+      fetchTask(); // Refetch to display the latest data including dates
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to update task');
       console.error("Update task error:", err);
@@ -343,8 +357,16 @@ const TaskDetailsPage = () => {
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <DateTimePicker 
-            value={task.start ? new Date(task.start) : undefined} 
-            onChange={(date) => setTask(prev => prev ? { ...prev, start: date } : null)} 
+            label="Start Date & Time"
+            value={editableStartDate}
+            onChange={setEditableStartDate}
+          />
+        </div>
+        <div>
+          <DateTimePicker 
+            label="End Date & Time"
+            value={editableEndDate}
+            onChange={setEditableEndDate}
           />
         </div>
       </div>
