@@ -287,9 +287,9 @@ const TaskDetailsPage = () => {
                 />
               </Avatar>
             ))}
-            {/* <Button variant="secondary" size="icon" className="rounded-full cursor-pointer">
+            <Button variant="secondary" size="icon" className="rounded-full cursor-pointer">
               <Plus /> 
-            </Button> */}
+            </Button>
             {/* TODO: Implement add/remove people functionality */}
           </div>
         ) : <p className="text-sm text-muted-foreground">No one assigned yet.</p>}
@@ -330,7 +330,7 @@ const TaskDetailsPage = () => {
             const originalCommentIndex = task.comments ? task.comments.indexOf(comment, commentsToRemoveIndices.includes(task.comments.indexOf(comment)) ? task.comments.indexOf(comment) + 1 : 0) : -1;
 
             return (
-              <div key={`existing-${originalCommentIndex}`} className={`flex justify-between items-center p-2 border rounded-md ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'opacity-50 line-through' : ''}`}>
+              <div key={`existing-${originalCommentIndex}`} className={`flex justify-between items-center ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'opacity-50 line-through' : ''}`}>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment}</p>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveExistingComment(originalCommentIndex)} disabled={isLoading}>
                   <Trash2 className={`h-4 w-4 ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'text-yellow-500' : 'text-red-500'}`} />
