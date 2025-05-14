@@ -1,60 +1,54 @@
 "use client";
 
-import { useState, useEffect } from 'react'; // Added
+import { useState } from 'react'; // Removed useEffect
+import { useQuery, useQueryClient } from '@tanstack/react-query'; // Added
 import PageTitle from "@/components/blocks/page-title";
 import { PartsInventory, columns } from "./columns";
 import { PartsInventoryTableClient } from "./parts-inventory-table-client";
 import PageHeader from "@/components/blocks/page-header";
-import { AddInventoryDialog } from './add-inventory-dialog'; // Added
+import { AddInventoryDialog } from './add-inventory-dialog';
+import { api } from '@/lib/axios'; // Added
 
-async function getPartsInventoryData(): Promise<PartsInventory[]> {
-  // Fetch data from your API endpoint
-  // Replace with your actual API call
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/inventory`, { // Make sure NEXT_PUBLIC_API_URL is set in your .env.local
-      cache: "no-store", // Or 'force-cache' or 'default' depending on your needs
-    });
-    if (!res.ok) {
-      // This will activate the closest `error.js` Error Boundary
-      throw new Error('Failed to fetch parts inventory data');
+// Removed getPartsInventoryData function
+
+export default function PartsInventoryPage() {
+  const queryClient = useQueryClient(); // Added
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  const { data: partsInventoryData = [], isLoading, error } = useQuery<PartsInventory[], Error>({
+    queryKey: ['partsInventory'],
+    queryFn: async () => {
+      const response = await api.get('/inventory');
+      return response.data.data; // Assuming your API returns data in a 'data' field
+    },
+  });
+
+  // Removed useEffect for fetching data
+
+  const handleDialogClose = (open: boolean) => {
+    setAddDialogOpen(open);
+    if (!open) {
+      // Invalidate and refetch the query when the dialog closes after a potential add
+      queryClient.invalidateQueries({ queryKey: ['partsInventory'] });
     }
-    const responseJson = await res.json();
-    // Assuming your API returns data in a 'data' field like: { message: '...', data: [...] }
-    // And that each item in 'data' matches the PartsInventory type structure
-    // (especially part.name and recordedBy.name)
-    return responseJson.data as PartsInventory[]; 
-  } catch (error) {
-    console.error("Error fetching parts inventory:", error);
-    return []; // Return empty array on error or handle appropriately
-  }
-}
+  };
 
-export default function PartsInventoryPage() { // Changed from async function
-  const [data, setData] = useState<PartsInventory[]>([]); // Added for client-side data handling
-  const [addDialogOpen, setAddDialogOpen] = useState(false); // Added
-
-  // Fetch data on component mount and when addDialogOpen becomes false (after adding new item)
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedData = await getPartsInventoryData();
-      setData(fetchedData);
-    }
-    fetchData();
-  }, [addDialogOpen]); // Re-fetch when dialog closes after potential add
+  if (isLoading) return <div>Loading...</div>; // Added loading state
+  if (error) return <div>Error fetching data: {error.message}</div>; // Added error state
 
   return (
     <div>
       <PageHeader firstLinkName="Parts Inventory" secondLinkName="Inventory" />
       <PageTitle
         name="Parts Inventory"
-        onAdd={() => setAddDialogOpen(true)} // Added
+        onAdd={() => setAddDialogOpen(true)}
       />
       <div className="px-4">
-      <PartsInventoryTableClient columns={columns} data={data} />
+      <PartsInventoryTableClient columns={columns} data={partsInventoryData} />
       </div>
-      <AddInventoryDialog // Added
+      <AddInventoryDialog
         open={addDialogOpen}
-        onOpenChange={setAddDialogOpen}
+        onOpenChange={handleDialogClose} // Updated to use handleDialogClose
       />
     </div>
   );
