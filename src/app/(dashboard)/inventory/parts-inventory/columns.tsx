@@ -18,12 +18,19 @@ import { Badge } from "@/components/ui/badge"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type PartsInventory = {
-  id: string
-  service_type: "Sell" | "Buy"
-  part_number: string
-  entry_date: string
-  recorded_by: string
-}
+  _id: string;
+  serviceType: "sell" | "buy";
+  part: {
+    _id: string;
+    name: string;
+  };
+  entryDate: string; // Assuming it's a string date from backend, will format in cell
+  recordedBy: {
+    _id: string;
+    name: string;
+  };
+  numberOfParts: number;
+};
 
 export const columns: ColumnDef<PartsInventory>[] = [
   {
@@ -49,37 +56,68 @@ export const columns: ColumnDef<PartsInventory>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "service_type",
+    accessorKey: "serviceType",
     header: "Service Type",
     cell: ({ row }) => {
-      const serviceType = row.getValue("service_type") as string
+      const serviceType = row.getValue("serviceType") as string
 
       return (
-        <Badge variant="outline"><span className="p-1 px-2">{serviceType}</span></Badge>
+        <Badge variant={serviceType === 'sell' ? "destructive" : "default"}><span className="p-1 px-2 capitalize">{serviceType}</span></Badge>
       )
     },
   },
   {
-    accessorKey: "part_number",
+    accessorKey: "part.name", // Access nested data
     header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Part Number
+            Part Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
       },
+    cell: ({ row }) => {
+      const part = row.original.part;
+      return <div>{part.name}</div>;
+    },
   },
   {
-    accessorKey: "entry_date",
+    accessorKey: "entryDate",
     header: "Entry Date",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("entryDate"));
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      return <div>{formattedDate}</div>;
+    },
   },
   {
-    accessorKey: "recorded_by",
+    accessorKey: "recordedBy.name", // Access nested data
     header: "Recorded By",
+    cell: ({ row }) => {
+      const recordedBy = row.original.recordedBy;
+      return <div>{recordedBy.name}</div>;
+    },
+  },
+  {
+    accessorKey: "numberOfParts",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Number of Parts
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     id: "actions",
@@ -97,7 +135,7 @@ export const columns: ColumnDef<PartsInventory>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(partsinventory.id)}
+              onClick={() => navigator.clipboard.writeText(partsinventory._id)}
             >
               Edit
             </DropdownMenuItem>
