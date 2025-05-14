@@ -1,7 +1,11 @@
+"use client";
+
+import { useState, useEffect } from 'react'; // Added
 import PageTitle from "@/components/blocks/page-title";
 import { PartsInventory, columns } from "./columns";
 import { PartsInventoryTableClient } from "./parts-inventory-table-client";
 import PageHeader from "@/components/blocks/page-header";
+import { AddInventoryDialog } from './add-inventory-dialog'; // Added
 
 async function getPartsInventoryData(): Promise<PartsInventory[]> {
   // Fetch data from your API endpoint
@@ -25,18 +29,33 @@ async function getPartsInventoryData(): Promise<PartsInventory[]> {
   }
 }
 
-export default async function PartsInventoryPage() {
-  const data = await getPartsInventoryData();
+export default function PartsInventoryPage() { // Changed from async function
+  const [data, setData] = useState<PartsInventory[]>([]); // Added for client-side data handling
+  const [addDialogOpen, setAddDialogOpen] = useState(false); // Added
+
+  // Fetch data on component mount and when addDialogOpen becomes false (after adding new item)
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedData = await getPartsInventoryData();
+      setData(fetchedData);
+    }
+    fetchData();
+  }, [addDialogOpen]); // Re-fetch when dialog closes after potential add
 
   return (
     <div>
       <PageHeader firstLinkName="Parts Inventory" secondLinkName="Inventory" />
       <PageTitle
         name="Parts Inventory"
+        onAdd={() => setAddDialogOpen(true)} // Added
       />
       <div className="px-4">
       <PartsInventoryTableClient columns={columns} data={data} />
       </div>
+      <AddInventoryDialog // Added
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+      />
     </div>
   );
 }
