@@ -75,7 +75,7 @@ export function TaskCard({
               {task.assignedPeople.map((person: Person) => (
                 <Avatar key={person._id} className="h-8 w-8"> {/* Changed person.id to person._id */}
                   <AvatarImage 
-                    src={person.avatar} 
+                    src={person.avatar?.url || '/default-avatar.png'} 
                     alt={person.name}
                   />
                 </Avatar>
