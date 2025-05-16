@@ -37,11 +37,13 @@ import { PartsInventory } from "./columns"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onSelectionChange?: (selectedRows: TData[]) => void;
 }
 
-export function PartsInventoryTableClient<TData extends PartsInventory, TValue>({ 
+export function PartsInventoryTableClient<TData extends PartsInventory, TValue>({
     columns, 
-    data 
+    data,
+    onSelectionChange
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -49,23 +51,32 @@ export function PartsInventoryTableClient<TData extends PartsInventory, TValue>(
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
-    data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    data,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
     },
+    enableRowSelection: true, // Enable row selection
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    // state is already defined above
   })
+
+  React.useEffect(() => {
+    if (onSelectionChange) {
+      const selectedItems = table.getSelectedRowModel().flatRows.map(row => row.original);
+      onSelectionChange(selectedItems);
+    }
+  }, [rowSelection, table, onSelectionChange]);
 
   return (
     <div>
