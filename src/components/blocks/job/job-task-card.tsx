@@ -89,7 +89,7 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
           {task.assignedPeople && task.assignedPeople.length > 0 && (
             <div className="flex items-center gap-0.5">
               {task.assignedPeople.map(person => (
-                <Avatar key={person.id} className="h-8 w-8">
+                <Avatar key={person._id} className="h-8 w-8">
                   <AvatarImage 
                     src={person.avatar.url} 
                     alt={person.name}
