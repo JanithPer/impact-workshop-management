@@ -72,23 +72,9 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
         </div>
         
         <div className="flex gap-1"> {/* Wrapped buttons in a flex container */} 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="size-7 cursor-pointer"
-                  onClick={() => console.log('Add to Kanban clicked for task:', task._id)} // Placeholder onClick
-                >
-                  <KanbanSquare className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add to kanban</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button variant="outline">
+            Add To Kanban
+          </Button>
           <Button 
             variant="ghost" 
             size="icon" 
