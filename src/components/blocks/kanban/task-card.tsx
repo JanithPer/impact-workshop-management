@@ -10,6 +10,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useState } from 'react'
+import Link from 'next/link'
 
 const colorModes = {
   success: 'bg-green-500',
@@ -66,9 +67,11 @@ export function TaskCard({
       
       <div className='flex justify-between pl-2'>
         <div className='flex flex-col gap-2 w-full'>
+        <Link href={`/orders/job/task/${task._id}`} passHref>
             <h3 className="text-lg font-semibold cursor-pointer hover:underline">
               {task.name} {/* Changed from title to name */}
             </h3>
+        </Link>
           
           {task.assignedPeople && task.assignedPeople.length > 0 && (
             <div className="flex items-center gap-0.5">
