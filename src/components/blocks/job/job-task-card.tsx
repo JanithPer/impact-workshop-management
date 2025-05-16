@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +11,10 @@ import { Card } from "@/components/ui/card";
 import { Trash, KanbanSquare } from "lucide-react"; // Added KanbanSquare import
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Task } from "@/types/task"
+import { Task } from "@/types/task";
 import { Checkbox } from "@/components/ui/checkbox";
+import { api } from "@/lib/axios"; // Added api import
+import { toast } from "sonner"; // Added toast import
 
 const colorModes = {
   success: 'bg-green-500',
@@ -26,10 +28,37 @@ type ColorMode = keyof typeof colorModes
 interface JobTaskCardProps {
   task: Task;
   deleteTask: (_id: string) => void;
+  // No need to pass updateTaskToKanban from parent if we manage state internally and refresh
 }
 
 const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
   const [isChecked, setIsChecked] = useState(false);
+  const [isOnKanban, setIsOnKanban] = useState(task.onKanban || false);
+  const [isLoadingKanban, setIsLoadingKanban] = useState(false);
+
+  useEffect(() => {
+    setIsOnKanban(task.onKanban || false);
+  }, [task.onKanban]);
+
+  const handleToggleKanban = async () => {
+    if (!task._id) return;
+    setIsLoadingKanban(true);
+    try {
+      const response = await api.patch(`/tasks/${task._id}/kanban`, {
+        onKanban: !isOnKanban,
+      });
+      if (response.data.success) {
+        setIsOnKanban(!isOnKanban);
+        toast.success(`Task ${!isOnKanban ? 'added to' : 'removed from'} Kanban successfully!`);
+      } else {
+        toast.error(response.data.message || 'Failed to update Kanban status.');
+      }
+    } catch (err: any) {
+      console.error("Failed to update Kanban status:", err);
+      toast.error(err.response?.data?.message || "Failed to update Kanban status.");
+    }
+    setIsLoadingKanban(false);
+  };
 
   return (
     <Card className="p-4 relative overflow-hidden">
@@ -72,8 +101,12 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
         </div>
         
         <div className="flex gap-1"> {/* Wrapped buttons in a flex container */} 
-          <Button variant="outline">
-            Add To Kanban
+          <Button 
+            variant="outline"
+            onClick={handleToggleKanban}
+            disabled={isLoadingKanban}
+          >
+            {isLoadingKanban ? 'Updating...' : (isOnKanban ? 'Remove from Kanban' : 'Add To Kanban')}
           </Button>
           <Button 
             variant="ghost" 
