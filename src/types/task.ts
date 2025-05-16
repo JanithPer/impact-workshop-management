@@ -17,12 +17,15 @@ export interface Comment {
   updatedAt: string;
 }
 
+export type TaskStatus = 'todo' | 'in-progress' | 'done';
+export type TaskColorMode = 'success' | 'warning' | 'danger' | 'info';
+
 export interface Task {
   _id: string;
   name: string;
   description?: string;
-  status: 'todo' | 'in-progress' | 'done';
-  colorMode: 'success' | 'warning' | 'danger' | 'info';
+  status: TaskStatus;
+  colorMode: TaskColorMode;
   start: string;
   end?: string;
   assignedPeople?: Person[];

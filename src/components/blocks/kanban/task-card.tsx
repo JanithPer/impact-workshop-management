@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { Move, Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Task, AssignedPerson } from '../types/task' // Updated import
+import { Task, Person } from '@/types/task' // Updated import
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -72,7 +72,7 @@ export function TaskCard({
           
           {task.assignedPeople && task.assignedPeople.length > 0 && (
             <div className="flex items-center gap-0.5">
-              {task.assignedPeople.map((person: AssignedPerson) => (
+              {task.assignedPeople.map((person: Person) => (
                 <Avatar key={person._id} className="h-8 w-8"> {/* Changed person.id to person._id */}
                   <AvatarImage 
                     src={person.avatar} 

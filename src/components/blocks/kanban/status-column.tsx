@@ -4,7 +4,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SortableTaskCard } from './task-card'
-import { Task, TaskStatus } from '../types/task' // Updated import
+import { Task, TaskStatus } from '@/types/task' // Updated import
 
 export function StatusColumn({
   status,

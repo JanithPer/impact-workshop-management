@@ -5,7 +5,7 @@ import { DndContext, DragOverlay, closestCorners, Active, Over } from '@dnd-kit/
 import { arrayMove } from '@dnd-kit/sortable'
 import { StatusColumn } from './status-column'
 import { TaskCard } from './task-card'
-import { Task, TaskStatus } from '../types/task' // Updated import
+import { Task, TaskStatus } from '@/types/task' // Updated import
 import { api } from '@/lib/axios' // Import API instance
 
 export function KanbanBoard() { // Removed initialData prop
