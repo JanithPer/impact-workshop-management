@@ -32,13 +32,18 @@ interface JobTaskCardProps {
 }
 
 const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(task.status === 'done');
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [isOnKanban, setIsOnKanban] = useState(task.onKanban || false);
   const [isLoadingKanban, setIsLoadingKanban] = useState(false);
 
   useEffect(() => {
-    setIsOnKanban(task.onKanban || false);
-  }, [task.onKanban]);
+  setIsOnKanban(task.onKanban || false);
+}, [task.onKanban]);
+
+  useEffect(() => {
+    setIsChecked(task.status === 'done');
+  }, [task.status]);
 
   const handleToggleKanban = async () => {
     if (!task._id) return;
@@ -60,6 +65,28 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
     setIsLoadingKanban(false);
   };
 
+  const handleStatusChange = async (checked: boolean) => {
+    if (!task._id) return;
+    setIsLoadingStatus(true);
+    try {
+      const response = await api.patch(`/tasks/${task._id}/kanban`, {
+         status: checked ? 'done' : 'in-progress'
+       });
+      if (response.data.success) {
+        setIsChecked(checked);
+        toast.success(`Task status updated to ${checked ? 'done' : 'in-progress'}`);
+      } else {
+        toast.error(response.data.message || 'Failed to update task status.');
+        setIsChecked(!checked);
+      }
+    } catch (err: any) {
+      console.error("Failed to update task status:", err);
+      toast.error(err.response?.data?.message || "Failed to update task status.");
+      setIsChecked(!checked);
+    }
+    setIsLoadingStatus(false);
+  };
+
   return (
     <Card className="p-4 relative overflow-hidden">
       {/* Color strip */}
@@ -74,7 +101,8 @@ const JobTaskCard = ({ task, deleteTask }: JobTaskCardProps) => {
             <Checkbox 
               className="cursor-pointer"
               checked={isChecked}
-              onCheckedChange={(checked) => setIsChecked(!!checked)}
+              onCheckedChange={handleStatusChange}
+              disabled={isLoadingStatus}
             />
             <Link href={`/orders/job/task/${task._id}`} passHref>
               <h3 className={cn(
