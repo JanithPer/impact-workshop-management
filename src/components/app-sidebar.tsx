@@ -65,14 +65,6 @@ const data = {
           title: "Recent Orders",
           url: "/underconstruction",
         },
-        {
-          title: "Job Page",
-          url: "/orders/job",
-        },
-        {
-          title: "Task Page",
-          url: "/orders/job/task",
-        },
       ],
     },
     {
