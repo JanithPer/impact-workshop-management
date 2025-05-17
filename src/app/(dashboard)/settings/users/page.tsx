@@ -1,39 +1,63 @@
+"use client";
+
 import PageHeader from "@/components/blocks/page-header"
-import { User, columns } from "./columns"
 import PageTitle from "@/components/blocks/page-title"
-import { DataTable } from "@/components/blocks/data-table"
+import UsersTableClient from "./users-table-client"
+import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { api } from "@/lib/axios"
+import { DeleteUsersDialog } from "./delete-users-dialog"
+import { AddUserDialog } from "./add-user-dialog"
+import { User } from "./columns"
+import { toast } from 'sonner'; // Import toast
 
-async function getData(): Promise<User[]>{
- return[
-    {
-        id: "aab001",
-        avatar: "https://i.pinimg.com/736x/c0/a2/ca/c0a2ca2edf6d03227430d4fb639ba4aa.jpg",
-        name: "Drew Heath",
-        role: "Technician",
-        email: "drewheath@impactworkshop.com",
+const UsersPage = () => {
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([])
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      await Promise.all(ids.map(id => api.delete(`/users/${id}`)))
     },
-    {
-      id: "aab002",
-      avatar: "https://thebaffler.com/wp-content/uploads/2017/08/Flat800x800075f.jpg",
-      name: "True",
-      role: "Technician",
-      email: "true@impactworkshop.com",
-  },
- ]
-}
-
-const Users = async () => {
-    const data = await getData()
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      setSelectedUsers([])
+      toast.success(`${selectedUsers.length} user${selectedUsers.length !== 1 ? 's' : ''} deleted successfully!`); // Add success toast
+    },
+    onError: (error: any) => { // Optional: Add error handling
+      const errorMessage = error.response?.data?.message || 'Failed to delete users. Please try again.';
+      toast.error(errorMessage);
+      console.error("Error deleting users:", error);
+    }
+  })
 
   return (
     <div>
-    <PageHeader firstLinkName="Orders" secondLinkName="Repair Orders" />
-    <PageTitle name="Repair Orders" />
-    <div className="container mx-auto px-4">
-      <DataTable columns={columns} data={data} filterColumn="name" />
-    </div>
+      <PageHeader firstLinkName="Settings" secondLinkName="Users" />
+      <PageTitle
+        name="Users"
+        onAdd={() => setAddDialogOpen(true)}
+        onDelete={() => setDeleteDialogOpen(true)}
+        deleteDisabled={selectedUsers.length === 0}
+      />
+      <UsersTableClient onSelectionChange={setSelectedUsers} />
+      <DeleteUsersDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={() => {
+          deleteMutation.mutate(selectedUsers.map(u => u._id))
+          setDeleteDialogOpen(false)
+        }}
+        count={selectedUsers.length}
+      />
+      <AddUserDialog 
+        open={addDialogOpen} 
+        onOpenChange={setAddDialogOpen} 
+      />
     </div>
   )
 }
 
-export default Users
+export default UsersPage

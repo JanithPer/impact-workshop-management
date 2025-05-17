@@ -4,14 +4,14 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SortableTaskCard } from './task-card'
-import { Task } from '../types/task'
+import { Task, TaskStatus } from '@/types/task' // Updated import
 
 export function StatusColumn({
   status,
   tasks,
   deleteTask,
 }: {
-  status: Task['status']
+  status: TaskStatus
   tasks: Task[]
   deleteTask: (id: string) => void
 }) {
@@ -30,12 +30,12 @@ export function StatusColumn({
         }`}
       >
         <SortableContext
-          id={status}
-          items={tasks.map(task => task.id)}
+          id={status} // dnd-kit id for the column
+          items={tasks.map(task => task._id)} // Use _id for sortable items
           strategy={verticalListSortingStrategy}
         >
           {tasks.map(task => (
-            <SortableTaskCard key={task.id} task={task} deleteTask={deleteTask} />
+            <SortableTaskCard key={task._id} task={task} deleteTask={deleteTask} />
           ))}
         </SortableContext>
       </div>

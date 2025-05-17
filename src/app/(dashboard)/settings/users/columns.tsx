@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState } from 'react'; // Added React and useState import
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 
@@ -14,16 +15,57 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { EditUserDialog } from "./edit-user-dialog"; // Import the EditUserDialog component
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type User = {
-  id: string
-  avatar: string
+  _id: string
+  avatar: {
+    url: string
+    publicId: string
+  }
   name: string
-  role: "Technician" | "Mechanic"
+  role: string
   email: string
 }
+
+// Define CellComponent outside of columns definition to use hooks
+const ActionsCell: React.FC<{ row: any }> = ({ row }) => {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  const user = row.original as User;
+
+  const handleEditClick = () => {
+    setSelectedUser(user);
+    setIsEditDialogOpen(true);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={handleEditClick}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Delete</DropdownMenuItem> {/* TODO: Implement Delete functionality */}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <EditUserDialog
+        user={selectedUser}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      />
+    </>
+  );
+};
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -52,12 +94,12 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "avatar",
     header: "Avatar",
     cell: ({ row }) => {
-        const avatarUrl = row.getValue("avatar") as string
-        const userName = row.getValue("name") as string // For fallback initials
-  
+        const avatarData = row.getValue("avatar") as { url: string, publicId: string }
+        const userName = row.getValue("name") as string
+
         return (
           <Avatar>
-            <AvatarImage src={avatarUrl} alt={`${userName}'s avatar`} />
+            <AvatarImage src={avatarData.url} alt={`${userName}'s avatar`} />
             <AvatarFallback>
               {userName
                 .split(" ")
@@ -93,29 +135,6 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const user = row.original
- 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => <ActionsCell row={row} />, // Use the new ActionsCell component
   },
 ]

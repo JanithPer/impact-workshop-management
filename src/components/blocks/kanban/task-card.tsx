@@ -5,11 +5,12 @@ import { CSS } from '@dnd-kit/utilities'
 import { Move, Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Task } from '@/app/(dashboard)/kanban/data'
+import { Task, Person } from '@/types/task' // Updated import
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useState } from 'react'
+import Link from 'next/link'
 
 const colorModes = {
   success: 'bg-green-500',
@@ -28,7 +29,7 @@ export function SortableTaskCard({ task, deleteTask }: { task: Task; deleteTask:
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.id })
+  } = useSortable({ id: task._id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -48,7 +49,7 @@ export function TaskCard({
   deleteTask,
   listeners,
 }: {
-  task: Task & { colorMode?: ColorMode }
+  task: Task // colorMode is now part of Task type
   deleteTask: (id: string) => void
   listeners?: any
 }) {
@@ -66,16 +67,18 @@ export function TaskCard({
       
       <div className='flex justify-between pl-2'>
         <div className='flex flex-col gap-2 w-full'>
+        <Link href={`/orders/job/task/${task._id}`} passHref>
             <h3 className="text-lg font-semibold cursor-pointer hover:underline">
-              {task.title}
+              {task.name} {/* Changed from title to name */}
             </h3>
+        </Link>
           
-          {task.assignedPeople.length > 0 && (
+          {task.assignedPeople && task.assignedPeople.length > 0 && (
             <div className="flex items-center gap-0.5">
-              {task.assignedPeople.map(person => (
-                <Avatar key={person.id} className="h-8 w-8">
+              {task.assignedPeople.map((person: Person) => (
+                <Avatar key={person._id} className="h-8 w-8"> {/* Changed person.id to person._id */}
                   <AvatarImage 
-                    src={person.avatar} 
+                    src={person.avatar?.url || '/default-avatar.png'} 
                     alt={person.name}
                   />
                 </Avatar>
@@ -97,7 +100,7 @@ export function TaskCard({
             variant="ghost" 
             size="icon" 
             className="size-7"
-            onClick={() => deleteTask(task.id)}
+            onClick={() => deleteTask(task._id)}
           >
             <Trash className="w-4 h-4" />
           </Button>

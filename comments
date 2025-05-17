@@ -1,9 +1,0 @@
-Database comments
-
-CREATE TABLE public.users (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  avatar TEXT,
-  email TEXT NOT NULL,
-  name TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user'
-)

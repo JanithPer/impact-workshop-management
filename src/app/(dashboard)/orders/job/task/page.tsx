@@ -4,7 +4,7 @@ import FileUpload from '@/components/blocks/file-upload'
 import PageHeader from '@/components/blocks/page-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Pencil, Save } from 'lucide-react'
+import { Pencil, Plus, Save } from 'lucide-react'
 import React, { useState } from 'react'
 import { initialComments, assignedPeople } from './data'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
@@ -15,6 +15,7 @@ const TaskPage = () => {
   const [comments, setComments] = useState(initialComments)
   const [newComment, setNewComment] = useState('')
   const [selectedMode, setSelectedMode] = useState('success')
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | undefined>(new Date());
 
   const handleAddComment = () => {
     if (newComment.trim() === '') return
@@ -41,6 +42,10 @@ const TaskPage = () => {
   const handleModeChange = (value: string) => {
     setSelectedMode(value)
   }
+
+  const handleDateTimeChange = (date: Date | undefined) => {
+    setSelectedDateTime(date);
+  };
 
   return (
     <div className='pb-4'>
@@ -83,7 +88,11 @@ const TaskPage = () => {
       </div>
 
       <div className="p-4">
-        <DateTimePicker />
+        <DateTimePicker 
+          value={selectedDateTime}
+          onChange={handleDateTimeChange}
+          label="Select Date and Time"
+        />
       </div>
 
       {assignedPeople.length > 0 && (
@@ -96,6 +105,9 @@ const TaskPage = () => {
               />
             </Avatar>
           ))}
+          <Button variant="secondary" size="icon" className="rounded-full cursor-pointer">
+            <Plus />
+          </Button>
         </div>
       )} 
     
