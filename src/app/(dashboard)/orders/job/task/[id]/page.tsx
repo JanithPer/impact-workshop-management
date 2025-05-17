@@ -130,7 +130,7 @@ const TaskDetailsPage = () => {
     }
 
     // Construct final comments array
-    let finalComments: TaskComment[] = task.comments ? [...task.comments] : [];
+    let finalComments: (TaskComment | string)[] = task.comments ? [...task.comments] : [];
     // Apply removals from existing comments
     // Sort indices in descending order to avoid shifting issues when splicing
     const sortedIndicesToRemove = [...commentsToRemoveIndices].sort((a, b) => b - a);
@@ -446,7 +446,7 @@ const TaskDetailsPage = () => {
 
             return (
               <div key={`existing-${originalCommentIndex}`} className={`flex justify-between items-center ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'opacity-50 line-through' : ''}`}>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{typeof comment === 'string' ? comment : comment.text}</p>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveExistingComment(originalCommentIndex)} disabled={isLoading}>
                   <Trash2 className={`h-4 w-4 ${commentsToRemoveIndices.includes(originalCommentIndex) ? 'text-yellow-500' : 'text-red-500'}`} />
                 </Button>

@@ -34,4 +34,5 @@ export interface Task {
   onKanban: boolean;
   createdAt?: string;
   updatedAt?: string;
+  jobId?: string; // Added jobId property
 }
