@@ -40,12 +40,10 @@ const PartsTableClient: React.FC<PartsTableClientProps> = ({ onSelectionChange }
 
   return (
     <>
-      <DataTable
+      <DataTable<Part, any>
         columns={tableColumns}
         data={partsData || []} // Provide empty array as default if data is loading or undefined
-        isLoading={isLoading}
-        filterColumnId="name" // Allow filtering by part name
-        filterPlaceholder="Filter by name..."
+        filterColumn="name" // Allow filtering by part name
         onSelectionChange={onSelectionChange}
       />
       {editingPart && (

@@ -300,7 +300,6 @@ const TaskDetailsPage = () => {
     <div className='pb-20'> {/* Increased pb for better scroll with more content */}
       <PageHeader 
         firstLinkName={task.jobId ? "Job" : "Repair Order"} 
-        firstLinkHref={task.jobId ? `/orders/job/${task.jobId}` : `/orders/repair-orders/${task.repairOrderId}`}
         secondLinkName="Task Details" 
       />
 
