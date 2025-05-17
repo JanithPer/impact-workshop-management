@@ -15,6 +15,7 @@ const TaskPage = () => {
   const [comments, setComments] = useState(initialComments)
   const [newComment, setNewComment] = useState('')
   const [selectedMode, setSelectedMode] = useState('success')
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | undefined>(new Date());
 
   const handleAddComment = () => {
     if (newComment.trim() === '') return
@@ -41,6 +42,10 @@ const TaskPage = () => {
   const handleModeChange = (value: string) => {
     setSelectedMode(value)
   }
+
+  const handleDateTimeChange = (date: Date | undefined) => {
+    setSelectedDateTime(date);
+  };
 
   return (
     <div className='pb-4'>
@@ -83,7 +88,11 @@ const TaskPage = () => {
       </div>
 
       <div className="p-4">
-        <DateTimePicker />
+        <DateTimePicker 
+          value={selectedDateTime}
+          onChange={handleDateTimeChange}
+          label="Select Date and Time"
+        />
       </div>
 
       {assignedPeople.length > 0 && (
