@@ -114,11 +114,6 @@ const data = {
       url: "/customers",
       icon: User,
     },
-    {
-      name: "Login", // Note: Login might not belong in the main authenticated sidebar
-      url: "/login",
-      icon: Lock,
-    },
   ],
 }
 
