@@ -2,7 +2,7 @@
 'use client';
 
 import PageHeader from '@/components/blocks/page-header';
-import React, { useMemo } from 'react'; // Modified: Added useMemo
+import React, { useMemo, useState } from 'react'; // Modified: Added useMemo and useState
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -31,11 +31,23 @@ const fetchTasks = async (): Promise<Task[]> => {
 };
 
 const CalendarPage = () => {
+  // Added: State for current date and view
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentView, setCurrentView] = useState<any>('month'); // 'month', 'week', 'day', 'agenda' as per react-big-calendar types
   // Added: useQuery hook to fetch tasks
   const { data: tasks, isLoading, error } = useQuery<Task[]>({
     queryKey: ['tasks'],
     queryFn: fetchTasks,
   });
+
+  // Added: Handlers for navigation and view changes
+  const handleNavigate = (newDate: Date) => {
+    setCurrentDate(newDate);
+  };
+
+  const handleView = (newView: any) => { // View can be 'month', 'week', 'day', 'agenda'
+    setCurrentView(newView);
+  };
 
   // Custom event style getter
   const eventPropGetter = (event: CalendarEvent) => { // Modified: Use CalendarEvent type
@@ -112,6 +124,11 @@ const CalendarPage = () => {
           views={['month', 'week', 'day']}
           style={{ margin: '50px' }}
           eventPropGetter={eventPropGetter}
+          // Added: Controlled date and view props
+          date={currentDate}
+          view={currentView}
+          onNavigate={handleNavigate}
+          onView={handleView}
         />
       </div>
     </div>
