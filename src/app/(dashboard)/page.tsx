@@ -1,16 +1,27 @@
 import PageHeader from "@/components/blocks/page-header";
 import PageTitle from "@/components/blocks/page-title";
+import TestChart from "./dashboard-components/test-chart";
+import { ChartBarDefault } from "./dashboard-components/chart-bar-default";
+import { ChartLineDefault } from "./dashboard-components/chart-lines-default";
 
 export default function Page() {
   return (
     <>
       <PageHeader firstLinkName="Home" secondLinkName="Dashboard" />
-      <PageTitle name="Dashboard" />
+      <div className="px-4 flex justify-between">
+        <h2 className="text-2xl">Dashboard</h2>
+      </div>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
-          <div className="bg-muted/50 aspect-video rounded-xl" />
+        <div className="grid auto-rows-min gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="bg-muted/50 rounded-xl h-full">
+            <TestChart />          
+          </div>
+          <div className="bg-muted/50 rounded-xl h-full">
+            <ChartBarDefault />
+          </div>
+          <div className="bg-muted/50 rounded-xl h-full">
+            <ChartLineDefault />
+          </div>
         </div>
         <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
       </div>
