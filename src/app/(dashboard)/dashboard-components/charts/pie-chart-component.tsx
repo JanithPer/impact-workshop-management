@@ -1,67 +1,67 @@
 "use client"
 
-import * as React from "react"
-import { Pie, PieChart, Sector } from "recharts"
+import React from "react"
+import { 
+  Pie, 
+  PieChart, 
+  ResponsiveContainer, 
+  Cell, 
+  Tooltip, 
+  Legend 
+} from "recharts"
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 interface PieChartProps {
-    data: any[];
-    chartConfig: ChartConfig;
-    title: string;
-    description: string;
-    dataKey: string;
-    nameKey: string;
+  data: {
+    name: string;
+    value: number;
+  }[];
+  title: string;
+  description: string;
 }
 
-export function PieChartComponent({ data, chartConfig, title, description, dataKey, nameKey }: PieChartProps) {
-    const chartRef = React.useRef<HTMLDivElement>(null)
-
-    return (
-        <Card className="flex flex-col h-full">
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-                <CardDescription>{description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow flex items-center justify-center">
-                <ChartContainer
-                    config={chartConfig}
-                    className="mx-auto aspect-square max-h-[300px]"
-                    ref={chartRef}
-                >
-                    <PieChart>
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
-                        />
-                        <Pie
-                            data={data}
-                            dataKey={dataKey}
-                            nameKey={nameKey}
-                            innerRadius={60}
-                            strokeWidth={5}
-                        >
-                            {data.map((entry, index) => (
-                                <Sector
-                                    key={`sector-${index}`}
-                                    fill={entry.fill}
-                                    />
-                            ))}
-                        </Pie>
-                    </PieChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
-    )
+export function PieChartComponent({ data, title, description }: PieChartProps) {
+  return (
+    <Card className="flex flex-col h-full">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <div className="w-full h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              >
+                {data.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={COLORS[index % COLORS.length]} 
+                  />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => [`${value} tasks`, 'Count']} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  )
 }

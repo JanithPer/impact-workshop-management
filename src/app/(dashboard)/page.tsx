@@ -5,7 +5,7 @@ import { ChartBarDefault } from "./dashboard-components/chart-bar-default";
 import { ChartLineDefault } from "./dashboard-components/chart-lines-default";
 import { PartsStockChart } from "./dashboard-components/parts-stock-chart";
 import { ChartPieSimple } from "./dashboard-components/chart-pie-simple";
-import { KanbanStatusPieChart } from "./dashboard-components/kanban-status-pie-chart";
+import { KanbanTasksChart } from "./dashboard-components/kanban-task-chart";
 
 export default function Page() {
   return (
@@ -20,7 +20,7 @@ export default function Page() {
             <PartsStockChart />
           </div>
           <div className="bg-muted/50 rounded-xl h-full">
-            <KanbanStatusPieChart />
+            <KanbanTasksChart />
           </div>
           <div className="bg-muted/50 rounded-xl h-full">
             <ChartLineDefault />
