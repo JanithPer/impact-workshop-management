@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card"
 import { SquareArrowOutUpRight } from "lucide-react";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 
 interface PieChartProps {
   data: {
@@ -27,6 +27,18 @@ interface PieChartProps {
   }[];
   title: string;
 }
+
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-background p-2 border rounded shadow-sm">
+          <p>{`${data.name}: ${data.value} tasks`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
 export function PieChartComponent({ data, title }: PieChartProps) {
   return (
@@ -60,7 +72,7 @@ export function PieChartComponent({ data, title }: PieChartProps) {
                 ))}
               </Pie>
               <Legend />
-              <Tooltip formatter={(value) => [`${value} tasks`, 'Count']} />
+              <Tooltip content={CustomTooltip} />
             </PieChart>
           </ResponsiveContainer>
         </div>
