@@ -49,7 +49,6 @@ export function KanbanTasksChart() {
     <PieChartComponent
       data={chartData}
       title="Kanban Tasks Status"
-      description="Distribution of tasks by status in Kanban board"
     />
   )
 }

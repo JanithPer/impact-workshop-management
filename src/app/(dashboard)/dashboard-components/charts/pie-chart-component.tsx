@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { SquareArrowOutUpRight } from "lucide-react";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -25,15 +26,18 @@ interface PieChartProps {
     value: number;
   }[];
   title: string;
-  description: string;
 }
 
-export function PieChartComponent({ data, title, description }: PieChartProps) {
+export function PieChartComponent({ data, title }: PieChartProps) {
   return (
     <Card className="flex flex-col h-full">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription>
+          <div className="flex items-center gap-1.5">
+            Go To Kanban <SquareArrowOutUpRight className="h-4 w-4" />
+          </div>
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="w-full h-[300px]">
