@@ -44,10 +44,9 @@ export function PieChartComponent({ data, title, description }: PieChartProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={80}
+                outerRadius={120}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
               >
                 {data.map((entry, index) => (
                   <Cell 
@@ -56,8 +55,8 @@ export function PieChartComponent({ data, title, description }: PieChartProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => [`${value} tasks`, 'Count']} />
               <Legend />
+              <Tooltip formatter={(value) => [`${value} tasks`, 'Count']} />
             </PieChart>
           </ResponsiveContainer>
         </div>
