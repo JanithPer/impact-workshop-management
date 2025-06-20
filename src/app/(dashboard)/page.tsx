@@ -1,13 +1,8 @@
 import PageHeader from "@/components/blocks/page-header";
-import PageTitle from "@/components/blocks/page-title";
-import TestChart from "./dashboard-components/test-chart";
-import { ChartBarDefault } from "./dashboard-components/chart-bar-default";
-import { ChartLineDefault } from "./dashboard-components/chart-lines-default";
 import { PartsStockChart } from "./dashboard-components/parts-stock-chart";
-import { ChartPieSimple } from "./dashboard-components/chart-pie-simple";
 import { KanbanTasksChart } from "./dashboard-components/kanban-task-chart";
-import { ChartBarMultiple } from "./dashboard-components/chart-bar-multiple";
 import { LowStockPartsChart } from "./dashboard-components/low-stock-parts-chart";
+import RecentOrdersTable from "./dashboard-components/recent-orders-table";
 
 export default function Page() {
   return (
@@ -29,6 +24,7 @@ export default function Page() {
           </div>
         </div>
         <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+        <RecentOrdersTable />
       </div>
     </>
   );
