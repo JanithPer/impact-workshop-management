@@ -14,7 +14,6 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart"
 import { SquareArrowOutUpRight } from "lucide-react"
 
@@ -32,12 +31,12 @@ export function BarChartComponent({ data, chartConfig, title, description, dataK
 
   const wrapperStyle: React.CSSProperties = {
     width: "100%",
-    overflowX: isScrollable ? "auto" : "hidden", // Only allow scroll when there are many items
+    overflowX: isScrollable ? "auto" : "hidden",
   };
 
   const chartStyle: React.CSSProperties = {
     height: "250px",
-    width: isScrollable ? `${data.length * 60}px` : "100%", // Be responsive by default, and expand when scrollable.
+    width: isScrollable ? `${data.length * 60}px` : "100%",
   };
 
   return (
@@ -56,10 +55,25 @@ export function BarChartComponent({ data, chartConfig, title, description, dataK
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
+                tickFormatter={(value: string) => {
+                  if (value.length > 3) {
+                    return `${value.slice(0, 3)}...`
+                  }
+                  return value
+                }}
               />
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={({ active, payload, label }) => {
+                  if (active && payload?.length) {
+                    return (
+                      <div className="rounded-lg border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-sm">
+                        {`${label} : ${payload[0].value}`}
+                      </div>
+                    )
+                  }
+                  return null
+                }}
               />
               <Bar dataKey={dataKey} fill={`var(--color-${dataKey})`} radius={8} />
             </BarChart>
