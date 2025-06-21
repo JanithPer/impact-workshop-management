@@ -67,11 +67,11 @@ nextjs-portal {
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --chart-1: rgb(51, 51, 51);
+  --chart-2: rgb(189, 187, 187);
+  --chart-3: rgb(102, 102, 102);    /* Dark Gray */
+  --chart-4: rgb(153, 153, 153);    /* Medium Gray */
+  --chart-5: rgb(224, 224, 224);    /* Light Gray */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -101,11 +101,11 @@ nextjs-portal {
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: rgb(246, 246, 246);
+  --chart-2: rgb(166, 166, 166);
+  --chart-3: rgb(230, 230, 230);    /* Light Gray */
+  --chart-4: rgb(180, 180, 180);    /* Medium Gray */
+  --chart-5: rgb(120, 120, 120);    /* Dark Gray */
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

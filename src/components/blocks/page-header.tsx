@@ -28,9 +28,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({ firstLinkName, secondLinkName }
         >
           {theme === "dark" ? <Moon /> : <Sun />}
         </Button>
-        <Button variant="ghost" size="icon" className="size-7">
+        {/* <Button variant="ghost" size="icon" className="size-7">
           <Bell />
-        </Button>
+        </Button> */}
         <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
         <Breadcrumb>
           <BreadcrumbList>

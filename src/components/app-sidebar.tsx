@@ -46,10 +46,6 @@ const data = {
           title: "Parts Inventory",
           url: "/inventory/parts-inventory",
         },
-        {
-          title: "Low Stock",
-          url: "/underconstruction",
-        },
       ],
     },
     {
@@ -60,10 +56,6 @@ const data = {
         {
           title: "Repair Orders",
           url: "/orders/repair-orders",
-        },
-        {
-          title: "Recent Orders",
-          url: "/underconstruction",
         },
       ],
     },
@@ -87,10 +79,6 @@ const data = {
       url: "#",
       icon: Settings,
       items: [
-        {
-          title: "General",
-          url: "/underconstruction",
-        },
         {
           title: "Users",
           url: "/settings/users",
@@ -130,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
