@@ -11,7 +11,7 @@ export default function Page() {
       <div className="px-4 flex justify-between">
         <h2 className="text-2xl">Dashboard</h2>
       </div>
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
+      <div className="flex flex-col gap-5 p-4 pt-4">
         <div className="grid auto-rows-min gap-4 sm:grid-cols-2 md:grid-cols-3 h-[400px]">
           <div className="bg-muted/50 rounded-xl h-full">
             <PartsStockChart />
@@ -23,7 +23,6 @@ export default function Page() {
             <LowStockPartsChart />
           </div>
         </div>
-        <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
         <RecentOrdersTable />
       </div>
     </>
