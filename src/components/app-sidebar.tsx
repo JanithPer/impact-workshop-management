@@ -46,10 +46,6 @@ const data = {
           title: "Parts Inventory",
           url: "/inventory/parts-inventory",
         },
-        {
-          title: "Low Stock",
-          url: "/underconstruction",
-        },
       ],
     },
     {
@@ -60,10 +56,6 @@ const data = {
         {
           title: "Repair Orders",
           url: "/orders/repair-orders",
-        },
-        {
-          title: "Recent Orders",
-          url: "/underconstruction",
         },
       ],
     },
@@ -88,10 +80,6 @@ const data = {
       icon: Settings,
       items: [
         {
-          title: "General",
-          url: "/underconstruction",
-        },
-        {
           title: "Users",
           url: "/settings/users",
         },
@@ -113,11 +101,6 @@ const data = {
       name: "Customers",
       url: "/customers",
       icon: User,
-    },
-    {
-      name: "Login", // Note: Login might not belong in the main authenticated sidebar
-      url: "/login",
-      icon: Lock,
     },
   ],
 }

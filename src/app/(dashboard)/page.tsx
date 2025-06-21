@@ -12,7 +12,7 @@ export default function Page() {
         <h2 className="text-2xl">Dashboard</h2>
       </div>
       <div className="flex flex-col gap-5 p-4 pt-4">
-        <div className="grid auto-rows-min gap-4 sm:grid-cols-2 md:grid-cols-3 h-[400px]">
+        <div className="grid auto-rows-min gap-4 sm:grid-cols-2 md:grid-cols-3">
           <div className="bg-muted/50 rounded-xl h-full">
             <PartsStockChart />
           </div>
