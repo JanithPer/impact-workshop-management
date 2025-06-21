@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/chart"
 import { SquareArrowOutUpRight } from "lucide-react"
 import React from "react"
+import Link from "next/link"
 
 // Define the structure of a Part based on your Mongoose model
 interface Part {
@@ -109,9 +110,11 @@ export function LowStockPartsChart() {
         </div>
       </CardContent>
       <CardFooter className="flex-col items-center gap-2 text-sm">
-        <div className="leading-none flex gap-1.5 text-muted-foreground">
-          Go To Stock <SquareArrowOutUpRight className="h-4 w-4" />
-        </div>
+        <Link href="/inventory/parts" className="inline-block">
+            <div className="flex items-center gap-1.5 text-sm">
+              Go To Stock <SquareArrowOutUpRight className="h-4 w-4" />
+            </div>
+          </Link>
       </CardFooter>
     </Card>
   )

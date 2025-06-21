@@ -16,6 +16,7 @@ import {
   ChartTooltip,
 } from "@/components/ui/chart"
 import { SquareArrowOutUpRight } from "lucide-react"
+import Link from "next/link"
 
 interface BarChartProps {
   data: any[];
@@ -81,9 +82,11 @@ export function BarChartComponent({ data, chartConfig, title, description, dataK
         </div>
       </CardContent>
       <CardFooter className="flex-col items-center gap-2 text-sm">
-        <div className="leading-none flex gap-1.5 text-muted-foreground">
-          Go To Stock <SquareArrowOutUpRight className="h-4 w-4" />
-        </div>
+        <Link href="/inventory/parts" className="inline-block">
+            <div className="flex items-center gap-1.5 text-sm">
+              Go To Stock <SquareArrowOutUpRight className="h-4 w-4" />
+            </div>
+          </Link>
       </CardFooter>
     </Card>
   )
