@@ -18,6 +18,11 @@ const localizer = momentLocalizer(moment);
 
 // Define color modes
 const colorModes = {
+  green: 'bg-green-500',
+  red: 'bg-red-500',
+  brown: 'bg-brown-500',
+  black: 'bg-black-500',
+
   success: 'bg-green-500',
   danger: 'bg-red-500',
   warning: 'bg-yellow-500',
