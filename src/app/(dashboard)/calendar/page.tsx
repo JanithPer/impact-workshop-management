@@ -20,8 +20,8 @@ const localizer = momentLocalizer(moment);
 const colorModes = {
   green: 'bg-green-500',
   red: 'bg-red-500',
-  brown: 'bg-brown-500',
-  black: 'bg-black-500',
+  brown: 'bg-amber-600',
+  black: 'bg-gray-900',
 
   success: 'bg-green-500',
   danger: 'bg-red-500',
@@ -59,7 +59,7 @@ const CalendarPage = () => {
     const colorMap: { [key: string]: string } = {
       [colorModes.green]: '#10B981', // Tailwind’s bg-green-500 color
       [colorModes.red]: '#EF4444',   // Tailwind’s bg-red-
-      [colorModes.brown]: '#A16207', // Tailwind’s bg-brown-500 color
+      [colorModes.brown]: '#A16207', // Tailwind’s bg-amber-600 color
       [colorModes.black]: '#111827', // Tailwind’s bg-black-500 color
       // Old color modes
       // [colorModes.success]: '#22C55E', // Tailwind’s bg-green-500 color
