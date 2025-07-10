@@ -177,7 +177,7 @@ export function AddRepairOrderDialog({ open, onOpenChange }: AddRepairOrderDialo
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="dealAmount" className="text-right">
-              Estimate
+              Deal Amount
             </Label>
             <div className="col-span-3">
               <Input id="dealAmount" type="number" step="0.01" {...register('dealAmount')} />

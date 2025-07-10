@@ -53,22 +53,20 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({}) 
   const [rowSelection, setRowSelection] = React.useState({})
-  // const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false); // Edit dialog is now on detail page
-  // const [selectedRepairOrder, setSelectedRepairOrder] = React.useState<RepairOrder | null>(null); // Edit dialog is now on detail page
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+  const [selectedRepairOrder, setSelectedRepairOrder] = React.useState<RepairOrder | null>(null);
 
   const { data: repairOrders = [], isLoading, error } = useQuery<RepairOrder[]>({ 
     queryKey: ['repair-orders'], 
     queryFn: fetchRepairOrders 
   });
 
-  // const openEditDialog = (repairOrder: RepairOrder) => {
-  //   setSelectedRepairOrder(repairOrder);
-  //   setIsEditDialogOpen(true);
-  // }; // Edit dialog is now on detail page
+  const openEditDialog = (repairOrder: RepairOrder) => {
+    setSelectedRepairOrder(repairOrder);
+    setIsEditDialogOpen(true);
+  };
 
-  // Memoize columns to prevent unnecessary re-renders
-  // The openEditDialog function is removed as editing is handled on the detail page.
-  const columns = React.useMemo(() => getColumns(/* openEditDialog */), []);
+  const columns = React.useMemo(() => getColumns(openEditDialog), []);
 
   const table = useReactTable({
     data: repairOrders,
@@ -168,7 +166,14 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
                     className="cursor-pointer hover:bg-muted/50"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell 
+                        key={cell.id}
+                        onClick={(e) => {
+                          if (cell.column.id === 'actions') {
+                            e.stopPropagation();
+                          }
+                        }}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -207,14 +212,13 @@ export default function RepairOrdersTableClient({ onSelectionChange }: RepairOrd
           Next
         </Button>
       </div>
-      {/* EditRepairOrderDialog is now rendered on the detail page /[id]/page.tsx */}
-      {/* {selectedRepairOrder && (
+      {selectedRepairOrder && (
         <EditRepairOrderDialog
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           repairOrder={selectedRepairOrder}
         />
-      )} */}
+      )}
     </div>
   )
 }

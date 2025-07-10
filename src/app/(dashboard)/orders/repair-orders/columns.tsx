@@ -43,7 +43,7 @@ interface RepairOrderCellContextProps {
   openEditDialog: (repairOrder: RepairOrder) => void;
 }
 
-export const columns = (/* openEditDialog: (repairOrder: RepairOrder) => void */): ColumnDef<RepairOrder>[] => [ // openEditDialog removed as edit is on detail page
+export const columns = (openEditDialog: (repairOrder: RepairOrder) => void): ColumnDef<RepairOrder>[] => [ 
   {
     id: "select",
     header: ({ table }) => (
@@ -153,13 +153,15 @@ export const columns = (/* openEditDialog: (repairOrder: RepairOrder) => void */
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(repairOrder._id)}
+              onClick={() => {
+                navigator.clipboard.writeText(repairOrder._id);
+                toast.success('Order ID copied to clipboard!');
+              }}
             >
               Copy Order ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem onClick={() => openEditDialog(repairOrder)}>Edit Order</DropdownMenuItem> */}
-            {/* Edit Order functionality is now on the detail page */}
+            <DropdownMenuItem onClick={() => openEditDialog(repairOrder)}>Edit Order</DropdownMenuItem>
             <DropdownMenuItem onClick={handleDelete} className="text-red-600">Delete Order</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

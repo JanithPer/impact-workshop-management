@@ -33,7 +33,7 @@ const repairOrderSchema = z.object({
   customer: z.string().min(1, { message: 'Customer is required' }),
   registrationNumber: z.string().min(1, { message: 'Registration Number is required' }).max(20),
   kilometers: z.coerce.number().min(0, { message: 'Kilometers must be a positive number' }),
-  vin: z.string().length(17, { message: 'VIN must be 17 characters' }).regex(/^[A-HJ-NPR-Z0-9]{17}$/, 'Invalid VIN format'),
+  vin: z.string().min(0, { message: 'VIN cannot be empty' }).max(20, { message: 'VIN cannot exceed 20 characters' }).regex(/^[A-HJ-NPR-Z0-9]{1,20}$/, 'Invalid VIN format'), 
   dealAmount: z.coerce.number().min(0).optional(),
   dateBooked: z.string().refine((date) => !isNaN(Date.parse(date)), { message: 'Invalid date' }),
   notes: z.string().max(500).optional(),
