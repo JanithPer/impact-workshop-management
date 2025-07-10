@@ -27,7 +27,7 @@ const taskSchema = z.object({
   name: z.string().min(1, 'Task name is required').max(100),
   description: z.string().max(500).optional(),
   status: z.enum(['todo', 'in-progress', 'done']),
-  colorMode: z.enum(['success', 'warning', 'danger', 'info']),
+  colorMode: z.enum(['green', 'red', 'brown', 'black', 'success', 'warning', 'danger', 'info']),
   start: z.string().refine((date) => !isNaN(Date.parse(date)), { message: "Start date is required" }),
   end: z.string().optional(),
   assignedPeople: z.array(z.string()).optional(), // Array of user IDs
@@ -208,10 +208,16 @@ export function AddTaskDialog({ open, onOpenChange, repairOrderId, onTaskAdded }
                       <SelectValue placeholder="Select color tag" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="green">Green</SelectItem>
+                      <SelectItem value="red">Red</SelectItem>
+                      <SelectItem value="brown">Brown</SelectItem>
+                      <SelectItem value="black">Black</SelectItem>
+
+                      {/* old color modes
                       <SelectItem value="success">Green</SelectItem>
                       <SelectItem value="warning">Yellow</SelectItem>
                       <SelectItem value="danger">Red</SelectItem>
-                      <SelectItem value="info">Blue</SelectItem>
+                      <SelectItem value="info">Blue</SelectItem> */}
                     </SelectContent>
                   </Select>
                 )}

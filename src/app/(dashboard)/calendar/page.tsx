@@ -57,8 +57,13 @@ const CalendarPage = () => {
   // Custom event style getter
   const eventPropGetter = (event: CalendarEvent) => { // Modified: Use CalendarEvent type
     const colorMap: { [key: string]: string } = {
-      [colorModes.success]: '#22C55E', // Tailwind’s bg-green-500 color
-      [colorModes.danger]: '#EF4444',  // Tailwind’s bg-red-500 color
+      [colorModes.green]: '#10B981', // Tailwind’s bg-green-500 color
+      [colorModes.red]: '#EF4444',   // Tailwind’s bg-red-
+      [colorModes.brown]: '#A16207', // Tailwind’s bg-brown-500 color
+      [colorModes.black]: '#111827', // Tailwind’s bg-black-500 color
+      // Old color modes
+      // [colorModes.success]: '#22C55E', // Tailwind’s bg-green-500 color
+      // [colorModes.danger]: '#EF4444',  // Tailwind’s bg-red-500 color
       [colorModes.warning]: '#F59E0B', // Tailwind’s bg-yellow-500 color
       [colorModes.info]: '#3B82F6',    // Tailwind’s bg-blue-500 color
     };
