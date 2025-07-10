@@ -96,7 +96,7 @@ export const columns = (/* openEditDialog: (repairOrder: RepairOrder) => void */
   },
   {
     accessorKey: "dealAmount",
-    header: () => <div className="text-right">Deal Amount</div>,
+    header: () => <div className="text-right">Estimate</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("dealAmount") || '0')
       const formatted = new Intl.NumberFormat("en-US", {

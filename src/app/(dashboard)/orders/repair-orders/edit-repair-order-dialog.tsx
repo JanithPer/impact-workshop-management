@@ -196,10 +196,10 @@ export function EditRepairOrderDialog({ open, onOpenChange, repairOrder }: EditR
             </div>
           </div>
 
-          {/* Deal Amount */}
+          {/* Estimate */}
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="dealAmount-edit" className="text-right">
-              Deal Amount
+              Estimate
             </Label>
             <div className="col-span-3">
               <Input id="dealAmount-edit" type="number" step="0.01" {...register('dealAmount')} />

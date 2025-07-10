@@ -109,7 +109,7 @@ const RepairOrderDetailPage = () => {
 
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
                 <div className="flex flex-col items-left gap-y-1">
-                    <p className="text-[12px] text-muted-foreground">Deal Amount</p>
+                    <p className="text-[12px] text-muted-foreground">Estimate</p>
                     <p>{repairOrder.dealAmount?.toLocaleString() || 'N/A'}</p>  
                 </div>
                 <div className="flex flex-col items-left gap-y-1">
