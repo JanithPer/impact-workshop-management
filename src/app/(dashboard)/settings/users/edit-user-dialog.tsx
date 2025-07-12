@@ -226,7 +226,6 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="user">User</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="technician">Technician</SelectItem>
                       <SelectItem value="apprentice">Apprentice</SelectItem>
