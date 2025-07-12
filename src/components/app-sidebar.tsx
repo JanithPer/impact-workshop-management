@@ -42,12 +42,12 @@ const data = {
         {
           title: "All Parts",
           url: "/inventory/parts",
-          roles: ["admin", "user", "technician"],
+          roles: ["admin", "user", "technician", "apprentice"],
         },
         {
           title: "Parts Inventory",
           url: "/inventory/parts-inventory",
-          roles: ["admin", "user", "technician"],
+          roles: ["admin", "user", "technician", "apprentice"],
         },
       ],
     },
@@ -59,7 +59,7 @@ const data = {
         {
           title: "Repair Orders",
           url: "/orders/repair-orders",
-          roles: ["admin", "user", "technician"],
+          roles: ["admin", "user", "technician", "apprentice"],
         },
       ],
     },
@@ -71,12 +71,12 @@ const data = {
         {
           title: "All Documents",
           url: "/directory/documents",
-          roles: ["admin", "user", "technician"],
+          roles: ["admin", "user", "technician", "apprentice"],
         },
         {
           title: "AI Help",
           url: "/directory/ai-help",
-          roles: ["admin", "user", "technician"],
+          roles: ["admin", "user", "technician", "apprentice"],
         },
       ],
     },
@@ -98,19 +98,19 @@ const data = {
       name: "Kanban",
       url: "/kanban",
       icon: ArrowRightLeft,
-      roles: ["admin", "user", "technician"],
+      roles: ["admin", "user", "technician", "apprentice"],
     },
     {
       name: "Calendar",
       url: "/calendar",
       icon: Calendar,
-      roles: ["admin", "user", "technician"],
+      roles: ["admin", "user", "technician", "apprentice"],
     },
     {
       name: "Customers",
       url: "/customers",
       icon: User,
-      roles: ["admin", "user", "technician"],
+      roles: ["admin", "user", "technician", "apprentice"],
     },
   ],
 }
