@@ -18,7 +18,7 @@ export interface Comment {
 }
 
 export type TaskStatus = 'todo' | 'in-progress' | 'done';
-export type TaskColorMode = 'success' | 'warning' | 'danger' | 'info';
+export type TaskColorMode = 'success' | 'danger' | 'warning' | 'info' | 'green' | 'red' | 'brown' | 'black';
 
 export interface Task {
   _id: string;

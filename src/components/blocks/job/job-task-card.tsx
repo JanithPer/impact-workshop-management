@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
-import { Trash, KanbanSquare } from "lucide-react"; // Added KanbanSquare import
+import { Trash } from "lucide-react"; // Added KanbanSquare import
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Task } from "@/types/task";
@@ -17,6 +11,11 @@ import { api } from "@/lib/axios"; // Added api import
 import { toast } from "sonner"; // Added toast import
 
 const colorModes = {
+  green: 'bg-green-500',
+  red: 'bg-red-500',
+  brown: 'bg-amber-600',
+  black: 'bg-gray-900',
+  // old color modes
   success: 'bg-green-500',
   danger: 'bg-red-500',
   warning: 'bg-yellow-500',

@@ -13,6 +13,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 const colorModes = {
+  green: 'bg-green-500',
+  red: 'bg-red-500',
+  brown: 'bg-amber-600',
+  black: 'bg-gray-900',
+  // old color modes
   success: 'bg-green-500',
   danger: 'bg-red-500',
   warning: 'bg-yellow-500',

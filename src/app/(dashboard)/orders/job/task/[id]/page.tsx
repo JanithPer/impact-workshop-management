@@ -330,10 +330,15 @@ const TaskDetailsPage = () => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Color Mode</SelectLabel>
-                <SelectItem value="success">Success</SelectItem>
+                <SelectItem value="green">Green</SelectItem>
+                <SelectItem value="red">Red</SelectItem>
+                <SelectItem value="brown">Brown</SelectItem>
+                <SelectItem value="black">Black</SelectItem>
+                {/* // Old color modes */}
+                {/* <SelectItem value="success">Success</SelectItem>
                 <SelectItem value="danger">Danger</SelectItem>
                 <SelectItem value="warning">Warning</SelectItem>
-                <SelectItem value="info">Info</SelectItem>
+                <SelectItem value="info">Info</SelectItem> */}
               </SelectGroup>
             </SelectContent>
           </Select>

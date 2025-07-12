@@ -27,7 +27,7 @@ const addUserSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }).max(50, { message: "Name cannot exceed 50 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  role: z.enum(['user', 'admin'], { required_error: "Role is required." }),
+  role: z.enum(['user', 'admin', 'technician',  'apprentice'], { required_error: "Role is required." }),
   avatar: z
     .instanceof(File, { message: "Avatar is required." })
     .optional()
@@ -158,8 +158,9 @@ export function AddUserDialog({ open, onOpenChange }: AddUserDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="user">User</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="technician">Technician</SelectItem>
+                      <SelectItem value="apprentice">Apprentice</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="col-span-4 text-right" />
