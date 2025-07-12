@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { api } from '@/lib/axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { User } from '@/types/user'; // Assuming User type for assignedPeople
+import { User } from '@/types/user'; 
 
 // Zod schema for task validation
 const taskSchema = z.object({
