@@ -1,0 +1,51 @@
+// data.ts (modified)
+const data = {
+  // ... other data
+  navMain: [
+    {
+      title: "Inventory",
+      url: "#",
+      icon: Package,
+      items: [
+        { title: "All Parts", url: "/inventory/parts", roles: ["admin", "user", "viewer"] },
+        { title: "Parts Inventory", url: "/inventory/parts-inventory", roles: ["admin", "user"] },
+      ],
+    },
+    {
+      title: "Orders",
+      url: "#",
+      icon: ReceiptText,
+      items: [
+        { title: "Repair Orders", url: "/orders/repair-orders", roles: ["admin", "user"] },
+      ],
+    },
+    {
+      title: "Directory",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        { title: "All Documents", url: "/directory/documents", roles: ["admin", "user", "viewer"] },
+        { title: "AI Help", url: "/directory/ai-help", roles: ["admin", "user"] },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings,
+      items: [
+        { title: "Users", url: "/settings/users", roles: ["admin"] }, // Only admin can see 'Users'
+      ],
+    },
+  ],
+  // ... rest of data
+};
+
+// In your AppSidebar component:
+const navMain = data.navMain
+  .map((item) => ({
+    ...item,
+    items: item.items.filter((subItem) =>
+      subItem.roles ? subItem.roles.includes(user?.role) : true // If no roles specified, assume public access
+    ),
+  }))
+  .filter((item) => item.items.length > 0);

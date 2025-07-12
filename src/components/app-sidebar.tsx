@@ -23,6 +23,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import LogoHeader from "./logo-header"
+import { useAuthStore } from "@/store/auth.store"
 
 
 const data = {
@@ -41,10 +42,12 @@ const data = {
         {
           title: "All Parts",
           url: "/inventory/parts",
+          roles: ["admin", "user", "technician"],
         },
         {
           title: "Parts Inventory",
           url: "/inventory/parts-inventory",
+          roles: ["admin", "user", "technician"],
         },
       ],
     },
@@ -56,6 +59,7 @@ const data = {
         {
           title: "Repair Orders",
           url: "/orders/repair-orders",
+          roles: ["admin", "user", "technician"],
         },
       ],
     },
@@ -67,10 +71,12 @@ const data = {
         {
           title: "All Documents",
           url: "/directory/documents",
+          roles: ["admin", "user", "technician"],
         },
         {
           title: "AI Help",
           url: "/directory/ai-help",
+          roles: ["admin", "user", "technician"],
         },
       ],
     },
@@ -82,6 +88,7 @@ const data = {
         {
           title: "Users",
           url: "/settings/users",
+          roles: ["admin"],
         },
       ],
     },
@@ -91,21 +98,38 @@ const data = {
       name: "Kanban",
       url: "/kanban",
       icon: ArrowRightLeft,
+      roles: ["admin", "user", "technician"],
     },
     {
       name: "Calendar",
       url: "/calendar",
       icon: Calendar,
+      roles: ["admin", "user", "technician"],
     },
     {
       name: "Customers",
       url: "/customers",
       icon: User,
+      roles: ["admin", "user", "technician"],
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuthStore()
+
+  const navMain = data.navMain
+    .map((item) => ({
+      ...item,
+      items: item.items.filter((subItem) =>
+        subItem.roles ? subItem.roles.includes(user?.role || "") : true
+      ),
+    }))
+    .filter((item) => item.items.length > 0)
+
+  const projects = data.projects.filter((item) =>
+    item.roles ? item.roles.includes(user?.role || "") : true
+  )
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -114,8 +138,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
 
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMain} />
+        <NavProjects projects={projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
