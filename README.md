@@ -1,4 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Impact Workshop Management: A Business Management Solution
+
+Engineered a full-stack workshop management system for an Australian diesel
+garage, providing a comprehensive business solution from scratch.
+Implemented role-based access control, a real-time Kanban board for project
+management, and features for inventory tracking and employee time management.
+Built a highly functional and responsive application using Next.js, Node.js, Express.js,
+MongoDB, and modern UI libraries like Tailwind CSS and Shadcn UI.
+Independently managed the entire project, from initial concept to final delivery, solving
+critical challenges along the way.
+
+## Screenshots
+
+<img src="docs/images/IWM ss (1).png" width="400" />
+<img src="docs/images/IWM ss (2).png" width="400" />
+<img src="docs/images/IWM ss (3).png" width="400" />
+<img src="docs/images/IWM ss (4).png" width="400" />
+<img src="docs/images/IWM ss (5).png" width="400" />
+<img src="docs/images/IWM ss (6).png" width="400" />
+<img src="docs/images/IWM ss (7).png" width="400" />
+<img src="docs/images/IWM ss (8).png" width="400" />
+<img src="docs/images/IWM ss (9).png" width="400" />
+<img src="docs/images/IWM ss (10).png" width="400" />
+<img src="docs/images/IWM ss (11).png" width="400" />
+<img src="docs/images/IWM ss (12).png" width="400" />
+<img src="docs/images/IWM ss (13).png" width="400" />
+<img src="docs/images/IWM ss (14).png" width="400" />
+<img src="docs/images/IWM ss (15).png" width="400" />
+<img src="docs/images/IWM ss (16).png" width="400" />
+<img src="docs/images/IWM ss (17).png" width="400" />
+<img src="docs/images/IWM ss (18).png" width="400" />
+<img src="docs/images/IWM ss (19).png" width="400" />
 
 ## Getting Started
 
